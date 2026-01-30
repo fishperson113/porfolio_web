@@ -120,36 +120,69 @@ export default function NeuralNetwork({
     const time = state.clock.elapsedTime
     
     // Rotate the entire group slowly
-    groupRef.current.rotation.y += delta * 0.1
-    groupRef.current.rotation.x = Math.sin(time * 0.2) * 0.1
+    groupRef.current.rotation.y += delta * 0.05
     
-    // React to mouse movement
-    const targetRotationX = mouseRef.current.y * 0.3
-    const targetRotationY = mouseRef.current.x * 0.3
-    
-    groupRef.current.rotation.x += (targetRotationX - groupRef.current.rotation.x) * 0.05
-    groupRef.current.rotation.y += (targetRotationY - groupRef.current.rotation.y) * 0.05
-    
-    // Animate node positions slightly
+    // Animate node positions with mouse attraction effect
     const positionAttr = pointsRef.current.geometry.attributes.position as THREE.BufferAttribute
+    
+    // Convert mouse position to 3D world coordinates
+    const mouseX = mouseRef.current.x * 2
+    const mouseY = mouseRef.current.y * 2
+    
+    // Attraction parameters
+    const attractionRadius = 1.5  // How far the effect reaches
+    const attractionStrength = 0.4 // How strong the pull is
+    const returnSpeed = 0.08 // How fast nodes return to original position
     
     for (let i = 0; i < actualNodeCount; i++) {
       const ox = originalPositions[i * 3]
       const oy = originalPositions[i * 3 + 1]
       const oz = originalPositions[i * 3 + 2]
       
-      // Add subtle breathing animation
-      const breathe = Math.sin(time + i * 0.1) * 0.02
+      // Current position
+      const cx = positionAttr.getX(i)
+      const cy = positionAttr.getY(i)
+      const cz = positionAttr.getZ(i)
       
-      positionAttr.setXYZ(
-        i,
-        ox + breathe,
-        oy + Math.sin(time * 0.5 + i * 0.2) * 0.02,
-        oz + breathe
-      )
+      // Calculate distance from mouse in 2D (projected)
+      const dx = mouseX - ox
+      const dy = mouseY - oy
+      const distanceToMouse = Math.sqrt(dx * dx + dy * dy)
+      
+      // Target position (with attraction effect)
+      let targetX = ox
+      let targetY = oy
+      let targetZ = oz
+      
+      if (distanceToMouse < attractionRadius) {
+        // Nodes within radius get attracted towards mouse
+        const attractionFactor = (1 - distanceToMouse / attractionRadius) * attractionStrength
+        targetX = ox + dx * attractionFactor
+        targetY = oy + dy * attractionFactor
+        // Z-axis: nodes push forward (towards camera) when attracted
+        targetZ = oz + attractionFactor * 0.3
+      }
+      
+      // Add subtle breathing animation
+      const breathe = Math.sin(time + i * 0.1) * 0.015
+      targetX += breathe
+      targetY += Math.sin(time * 0.5 + i * 0.2) * 0.015
+      
+      // Smoothly interpolate to target position
+      const newX = cx + (targetX - cx) * returnSpeed
+      const newY = cy + (targetY - cy) * returnSpeed
+      const newZ = cz + (targetZ - cz) * returnSpeed
+      
+      positionAttr.setXYZ(i, newX, newY, newZ)
     }
     
     positionAttr.needsUpdate = true
+    
+    // Also update line positions to follow nodes
+    if (linesRef.current) {
+      const lineAttr = linesRef.current.geometry.attributes.position as THREE.BufferAttribute
+      lineAttr.needsUpdate = true
+    }
   })
   
   const scale = Math.min(viewport.width, viewport.height) * 0.4

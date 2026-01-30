@@ -1,7 +1,7 @@
 'use client'
 
 import dynamic from 'next/dynamic'
-import { motion } from 'framer-motion'
+import { motion, useScroll, useTransform } from 'framer-motion'
 import GlowButton from '@/components/ui/GlowButton'
 
 // Dynamic import for 3D components (SSR disabled)
@@ -9,6 +9,11 @@ const Scene = dynamic(() => import('@/components/3d/Scene'), { ssr: false })
 const NeuralNetwork = dynamic(() => import('@/components/3d/NeuralNetwork'), { ssr: false })
 
 export default function Hero() {
+  // Scroll-based animation for exit effect
+  const { scrollY } = useScroll()
+  const scrollIndicatorOpacity = useTransform(scrollY, [0, 150], [1, 0])
+  const scrollIndicatorY = useTransform(scrollY, [0, 150], [0, 30])
+  
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* 3D Background */}
@@ -68,7 +73,7 @@ export default function Hero() {
             transition={{ delay: 0.6, duration: 0.5 }}
             className="flex flex-col sm:flex-row items-center justify-center gap-4"
           >
-            <GlowButton variant="primary" size="lg">
+            <GlowButton variant="primary" size="lg" href="#projects">
               View Projects
             </GlowButton>
             <GlowButton variant="secondary" size="lg" href="#contact">
@@ -77,11 +82,15 @@ export default function Hero() {
           </motion.div>
         </motion.div>
         
-        {/* Scroll indicator */}
+        {/* Scroll indicator with exit effect */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1, duration: 0.5 }}
+          style={{ 
+            opacity: scrollIndicatorOpacity,
+            y: scrollIndicatorY
+          }}
           className="absolute bottom-10 left-1/2 -translate-x-1/2"
         >
           <div className="flex flex-col items-center gap-2 text-[#71717A]">

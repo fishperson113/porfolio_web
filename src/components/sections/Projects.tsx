@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import { motion } from 'framer-motion'
 import BentoCard from '@/components/ui/BentoCard'
 import { projects } from '@/data/projects'
@@ -44,8 +45,30 @@ export default function Projects() {
                 featured={project.featured}
                 className="h-full"
               >
-                {/* Hackathon Badge */}
-                {project.hackathon && (
+                {/* Project Image */}
+                {project.image && (
+                  <div className="relative w-full h-48 -mx-6 -mt-6 mb-4 overflow-hidden rounded-t-xl">
+                    <Image
+                      src={project.image}
+                      alt={project.title}
+                      fill
+                      className="object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[rgba(18,18,26,0.95)] via-[rgba(18,18,26,0.5)] to-transparent" />
+                    
+                    {/* Hackathon Badge Overlay */}
+                    {project.hackathon && (
+                      <div className="absolute bottom-4 left-4">
+                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[rgba(0,0,0,0.6)] backdrop-blur-sm border border-[rgba(173,255,47,0.4)] text-sm font-semibold text-[#ADFF2F]">
+                          {project.hackathon.placement}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+                
+                {/* Hackathon Badge (if no image) */}
+                {project.hackathon && !project.image && (
                   <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[rgba(173,255,47,0.1)] border border-[rgba(173,255,47,0.3)] text-sm text-[#ADFF2F] mb-4">
                     {project.hackathon.placement}
                   </div>
@@ -88,9 +111,12 @@ export default function Projects() {
                         href={project.link}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-sm text-[#ADFF2F] hover:underline"
+                        className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[#ADFF2F] text-[#0A0A0F] font-semibold text-sm hover:bg-[#8BCC26] transition-colors"
                       >
-                        View Project →
+                        <span>Visit Website</span>
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                        </svg>
                       </a>
                     )}
                     {project.github && (

@@ -15,59 +15,41 @@ export interface Project {
 
 export const projects: Project[] = [
   {
+    id: 'scholarship-routing',
+    title: 'Scholarship Routing',
+    description: 'A comprehensive platform helping students overcome barriers of finding international scholarships. Features AI-powered chatbot consultant using Gemini + RAG, smart search engine, advanced filtering, and application tracking dashboard.',
+    tags: ['AI/ML', 'Gemini', 'RAG', 'React', 'FastAPI', 'Full-Stack'],
+    image: '/images/poster-SEEAPP-2025.jpg',
+    link: 'https://scholarshipsrouting.netlify.app/',
+    featured: true,
+    hackathon: {
+      name: 'AISC 2025 & SEEAPP 2025',
+      placement: '🥇 Double Champion'
+    }
+  },
+  {
+    id: 'foxy-adventure',
+    title: 'Foxy Adventure',
+    description: 'An action platformer game where Foxy the fox hunts for treasure. Features unique crafting system with elemental combinations and counter mechanics - your power is determined by your own hands!',
+    tags: ['Game Dev', 'Godot', 'GDScript', 'Platformer'],
+    image: '/images/present_vng.jpg',
+    link: 'https://doandev.itch.io/foxy-adventure',
+    featured: true,
+  },
+  {
     id: 'ai-agent-platform',
     title: 'AI Agent Platform',
     description: 'Multi-agent orchestration platform with LangChain, featuring autonomous task decomposition and parallel agent execution.',
     tags: ['AI/ML', 'LangChain', 'Python', 'FastAPI'],
-    featured: true,
-    hackathon: {
-      name: 'AI Builders Hackathon 2024',
-      placement: '🥇 1st Place'
-    }
-  },
-  {
-    id: 'realtime-collab-editor',
-    title: 'Real-time Collaborative Editor',
-    description: 'Google Docs-like editor with CRDT-based conflict resolution, supporting 100+ concurrent users with sub-50ms latency.',
-    tags: ['WebSocket', 'CRDT', 'React', 'Node.js'],
-    featured: true,
-    hackathon: {
-      name: 'DevTools Summit 2024',
-      placement: '🥈 2nd Place'
-    }
-  },
-  {
-    id: 'mobile-game-engine',
-    title: 'Cross-Platform Game Engine',
-    description: 'Lightweight game engine for mobile, featuring ECS architecture, physics simulation, and hot-reload development.',
-    tags: ['Game Dev', 'TypeScript', 'WebGL', 'React Native'],
-    featured: true,
-  },
-  {
-    id: 'neural-style-transfer',
-    title: 'Neural Style Transfer App',
-    description: 'Real-time artistic style transfer using optimized neural networks. Runs at 30fps on mobile devices.',
-    tags: ['ML', 'TensorFlow', 'Python', 'Flutter'],
-    featured: false,
-    hackathon: {
-      name: 'ML World Cup 2023',
-      placement: '🏆 Grand Prize'
-    }
-  },
-  {
-    id: 'smart-home-hub',
-    title: 'Smart Home Hub',
-    description: 'IoT orchestration platform with voice control, automation rules, and energy optimization using predictive ML.',
-    tags: ['IoT', 'Raspberry Pi', 'Python', 'React'],
     featured: false,
   },
   {
-    id: 'blockchain-identity',
-    title: 'Decentralized Identity',
-    description: 'Self-sovereign identity solution with zero-knowledge proofs for privacy-preserving credential verification.',
-    tags: ['Web3', 'Solidity', 'ZK-Proofs', 'Next.js'],
+    id: 'livekit-learning-room',
+    title: 'Livekit Learning Room',
+    description: 'Online interactive learning meeting room with teacher and student featuring polling, whiteboard, and attendance check.',
+    tags: ['LiveKit', 'Angular', 'ASP.NET Core', 'Real-time'],
     featured: false,
-  }
+  },
 ]
 
 export const featuredProjects = projects.filter(p => p.featured)

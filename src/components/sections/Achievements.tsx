@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { achievements } from '@/data/achievements'
 
@@ -8,6 +9,7 @@ const typeColors: Record<string, string> = {
   award: '#F59E0B',
   certification: '#3B82F6',
   milestone: '#10B981',
+  game: '#A855F7',
 }
 
 const typeIcons: Record<string, string> = {
@@ -15,12 +17,13 @@ const typeIcons: Record<string, string> = {
   award: '🎖️',
   certification: '📜',
   milestone: '🚀',
+  game: '🎮',
 }
 
 export default function Achievements() {
   return (
     <section id="achievements" className="py-24 px-6">
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-5xl mx-auto">
         {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -57,7 +60,7 @@ export default function Achievements() {
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true, margin: '-50px' }}
                   transition={{ duration: 0.6, delay: idx * 0.1 }}
-                  className={`relative flex items-center gap-8 ${
+                  className={`relative flex items-start gap-8 ${
                     isLeft ? 'md:flex-row' : 'md:flex-row-reverse'
                   }`}
                 >
@@ -80,7 +83,20 @@ export default function Achievements() {
                       ${isLeft ? 'md:mr-[calc(50%+2rem)]' : 'md:ml-[calc(50%+2rem)]'}
                     `}
                   >
-                    <div className="p-6 rounded-2xl bg-[rgba(18,18,26,0.7)] backdrop-blur-xl border border-[rgba(255,255,255,0.1)] hover:border-[rgba(255,255,255,0.15)] transition-colors">
+                    <div className="p-6 rounded-2xl bg-[rgba(18,18,26,0.7)] backdrop-blur-xl border border-[rgba(255,255,255,0.1)] hover:border-[rgba(255,255,255,0.15)] transition-colors overflow-hidden">
+                      {/* Image */}
+                      {achievement.image && (
+                        <div className="relative w-full h-48 -mx-6 -mt-6 mb-4 overflow-hidden">
+                          <Image
+                            src={achievement.image}
+                            alt={achievement.title}
+                            fill
+                            className="object-cover"
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-[rgba(18,18,26,0.9)] to-transparent" />
+                        </div>
+                      )}
+                      
                       {/* Date & Type Badge */}
                       <div className="flex items-center gap-3 mb-3">
                         <span className="text-2xl">{icon}</span>
@@ -108,9 +124,24 @@ export default function Achievements() {
                       </h3>
                       
                       {/* Description */}
-                      <p className="text-[#A1A1AA] leading-relaxed">
+                      <p className="text-[#A1A1AA] leading-relaxed mb-4">
                         {achievement.description}
                       </p>
+                      
+                      {/* Link */}
+                      {achievement.link && (
+                        <a
+                          href={achievement.link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-2 text-sm text-[#ADFF2F] hover:underline"
+                        >
+                          <span>Learn more</span>
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                          </svg>
+                        </a>
+                      )}
                     </div>
                   </div>
                 </motion.div>

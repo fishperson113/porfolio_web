@@ -51,8 +51,14 @@ export default function GlowButton({
   )
   
   if (href) {
+    const isInternal = href.startsWith('#') || href.startsWith('/')
     return (
-      <a href={href} className={baseStyles} target="_blank" rel="noopener noreferrer">
+      <a 
+        href={href} 
+        className={baseStyles} 
+        target={isInternal ? undefined : '_blank'} 
+        rel={isInternal ? undefined : 'noopener noreferrer'}
+      >
         {children}
       </a>
     )

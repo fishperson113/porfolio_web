@@ -15,14 +15,17 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-  title: 'Elite Portfolio | AI Engineer & Full-Stack Generalist',
+  title: 'Duong Pham | AI Engineer & Full-Stack Generalist',
   description: 'High-performance portfolio showcasing end-to-end product development, AI engineering, and hackathon wins.',
   keywords: ['AI Engineer', 'Full-Stack Developer', 'Web Developer', 'App Developer', 'Game Developer', 'Hackathon Winner'],
-  authors: [{ name: 'AI Engineer' }],
+  authors: [{ name: 'Duong Pham' }],
   openGraph: {
-    title: 'Elite Portfolio | AI Engineer & Full-Stack Generalist',
+    title: 'Duong Pham | AI Engineer & Full-Stack Generalist',
     description: 'High-performance portfolio showcasing end-to-end product development.',
     type: 'website',
+  },
+  icons: {
+    icon: '/icon.svg',
   },
 }
 
