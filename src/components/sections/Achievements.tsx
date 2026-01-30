@@ -1,0 +1,124 @@
+'use client'
+
+import { motion } from 'framer-motion'
+import { achievements } from '@/data/achievements'
+
+const typeColors: Record<string, string> = {
+  hackathon: '#ADFF2F',
+  award: '#F59E0B',
+  certification: '#3B82F6',
+  milestone: '#10B981',
+}
+
+const typeIcons: Record<string, string> = {
+  hackathon: '🏆',
+  award: '🎖️',
+  certification: '📜',
+  milestone: '🚀',
+}
+
+export default function Achievements() {
+  return (
+    <section id="achievements" className="py-24 px-6">
+      <div className="max-w-4xl mx-auto">
+        {/* Section Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-100px' }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-16"
+        >
+          <h2 className="text-4xl md:text-5xl font-bold mb-4">
+            <span className="text-[#FAFAFA]">Achievement </span>
+            <span className="text-[#ADFF2F]">Timeline</span>
+          </h2>
+          <p className="text-[#A1A1AA] text-lg max-w-2xl mx-auto">
+            A journey of building, winning, and continuous learning.
+          </p>
+        </motion.div>
+        
+        {/* Timeline */}
+        <div className="relative">
+          {/* Vertical Line */}
+          <div className="absolute left-8 md:left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-[#ADFF2F] via-[rgba(173,255,47,0.3)] to-transparent" />
+          
+          {/* Timeline Items */}
+          <div className="space-y-12">
+            {achievements.map((achievement, idx) => {
+              const isLeft = idx % 2 === 0
+              const color = typeColors[achievement.type]
+              const icon = typeIcons[achievement.type]
+              
+              return (
+                <motion.div
+                  key={achievement.id}
+                  initial={{ opacity: 0, x: isLeft ? -30 : 30 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true, margin: '-50px' }}
+                  transition={{ duration: 0.6, delay: idx * 0.1 }}
+                  className={`relative flex items-center gap-8 ${
+                    isLeft ? 'md:flex-row' : 'md:flex-row-reverse'
+                  }`}
+                >
+                  {/* Timeline Dot */}
+                  <div className="absolute left-8 md:left-1/2 -translate-x-1/2 z-10">
+                    <div 
+                      className="w-4 h-4 rounded-full border-2"
+                      style={{ 
+                        borderColor: color,
+                        backgroundColor: '#0A0A0F',
+                        boxShadow: `0 0 10px ${color}40`
+                      }}
+                    />
+                  </div>
+                  
+                  {/* Content Card */}
+                  <div 
+                    className={`
+                      flex-1 ml-20 md:ml-0
+                      ${isLeft ? 'md:mr-[calc(50%+2rem)]' : 'md:ml-[calc(50%+2rem)]'}
+                    `}
+                  >
+                    <div className="p-6 rounded-2xl bg-[rgba(18,18,26,0.7)] backdrop-blur-xl border border-[rgba(255,255,255,0.1)] hover:border-[rgba(255,255,255,0.15)] transition-colors">
+                      {/* Date & Type Badge */}
+                      <div className="flex items-center gap-3 mb-3">
+                        <span className="text-2xl">{icon}</span>
+                        <span 
+                          className="px-3 py-1 rounded-full text-xs font-medium capitalize"
+                          style={{ 
+                            backgroundColor: `${color}20`,
+                            color: color,
+                            border: `1px solid ${color}40`
+                          }}
+                        >
+                          {achievement.type}
+                        </span>
+                        <span className="text-sm text-[#71717A]">
+                          {new Date(achievement.date).toLocaleDateString('en-US', {
+                            month: 'short',
+                            year: 'numeric'
+                          })}
+                        </span>
+                      </div>
+                      
+                      {/* Title */}
+                      <h3 className="text-xl font-bold text-[#FAFAFA] mb-2">
+                        {achievement.title}
+                      </h3>
+                      
+                      {/* Description */}
+                      <p className="text-[#A1A1AA] leading-relaxed">
+                        {achievement.description}
+                      </p>
+                    </div>
+                  </div>
+                </motion.div>
+              )
+            })}
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
