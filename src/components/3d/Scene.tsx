@@ -1,12 +1,15 @@
 'use client'
 
+import { useState } from 'react'
 import { Canvas } from '@react-three/fiber'
-import { Preload } from '@react-three/drei'
+import { Preload, PerformanceMonitor } from '@react-three/drei'
 import { Suspense, ReactNode } from 'react'
+import { usePerformanceDegradation } from '@/hooks/use-performance-degradation'
 
 interface SceneProps {
   children: ReactNode
   className?: string
+  postProcessing?: boolean
 }
 
 function SceneLoader() {
@@ -17,21 +20,35 @@ function SceneLoader() {
   )
 }
 
-export default function Scene({ children, className = '' }: SceneProps) {
+export default function Scene({ children, className = '', postProcessing = false }: SceneProps) {
+  const { perfLevel, degrade } = usePerformanceDegradation()
+  const [degraded, setDegraded] = useState(false)
+
+  const handleDecline = () => {
+    setDegraded(true)
+    degrade()
+  }
+
   return (
     <div className={`relative ${className}`}>
       <Suspense fallback={<SceneLoader />}>
         <Canvas
-          dpr={[1, 2]}
+          dpr={degraded ? [0.5, 1] : [1, 2]}
           camera={{ position: [0, 0, 5], fov: 50 }}
-          gl={{ 
-            antialias: true,
+          gl={{
+            antialias: !degraded,
             alpha: true,
-            powerPreference: 'high-performance'
+            powerPreference: 'high-performance',
           }}
           style={{ background: 'transparent' }}
         >
-          {children}
+          <PerformanceMonitor
+            onDecline={handleDecline}
+            flipflops={3}
+            bounds={() => (perfLevel.level >= 2 ? [20, 40] : [30, 60])}
+          >
+            {children}
+          </PerformanceMonitor>
           <Preload all />
         </Canvas>
       </Suspense>

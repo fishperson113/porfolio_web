@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion'
 import GlassCard from '@/components/ui/GlassCard'
+import AnimatedText from '@/components/ui/animated-text'
 
 export default function About() {
   const highlights = [
@@ -34,8 +35,9 @@ export default function About() {
             transition={{ duration: 0.6 }}
           >
             <h2 className="text-4xl md:text-5xl font-bold mb-6">
-              <span className="text-[#FAFAFA]">About </span>
-              <span className="text-[#ADFF2F]">Me</span>
+              <AnimatedText text="About" className="text-[#FAFAFA]" />
+              {' '}
+              <AnimatedText text="Me" className="text-[#ADFF2F]" staggerDelay={0.08} />
             </h2>
             
             <GlassCard className="p-8 mb-8 bg-[rgba(18,18,26,0.4)]">

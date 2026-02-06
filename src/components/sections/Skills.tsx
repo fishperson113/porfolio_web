@@ -2,6 +2,7 @@
 
 import dynamic from 'next/dynamic'
 import { motion } from 'framer-motion'
+import AnimatedText from '@/components/ui/animated-text'
 import { skillCategories } from '@/data/skills'
 
 // Dynamic import for 3D components (SSR disabled)
@@ -38,8 +39,9 @@ export default function Skills() {
             className="order-1 lg:order-2"
           >
             <h2 className="text-4xl md:text-5xl font-bold mb-6">
-              <span className="text-[#FAFAFA]">End-to-End </span>
-              <span className="text-[#ADFF2F]">Expertise</span>
+              <AnimatedText text="End-to-End" className="text-[#FAFAFA]" />
+              {' '}
+              <AnimatedText text="Expertise" className="text-[#ADFF2F]" staggerDelay={0.08} />
             </h2>
             
             <p className="text-[#A1A1AA] text-lg mb-8 leading-relaxed">

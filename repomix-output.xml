@@ -1,0 +1,2886 @@
+This file is a merged representation of the entire codebase, combined into a single document by Repomix.
+
+<file_summary>
+This section contains a summary of this file.
+
+<purpose>
+This file contains a packed representation of the entire repository's contents.
+It is designed to be easily consumable by AI systems for analysis, code review,
+or other automated processes.
+</purpose>
+
+<file_format>
+The content is organized as follows:
+1. This summary section
+2. Repository information
+3. Directory structure
+4. Repository files (if enabled)
+5. Multiple file entries, each consisting of:
+  - File path as an attribute
+  - Full contents of the file
+</file_format>
+
+<usage_guidelines>
+- This file should be treated as read-only. Any changes should be made to the
+  original repository files, not this packed version.
+- When processing this file, use the file path to distinguish
+  between different files in the repository.
+- Be aware that this file may contain sensitive information. Handle it with
+  the same level of security as you would the original repository.
+</usage_guidelines>
+
+<notes>
+- Some files may have been excluded based on .gitignore rules and Repomix's configuration
+- Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
+- Files matching patterns in .gitignore are excluded
+- Files matching default ignore patterns are excluded
+- Files are sorted by Git change count (files with more changes are at the bottom)
+</notes>
+
+</file_summary>
+
+<directory_structure>
+.gitignore
+.repomixignore
+CLAUDE.md
+elite-portfolio.md
+netlify.toml
+next.config.ts
+package.json
+postcss.config.mjs
+public/icon.svg
+public/images/1st-SEEAPP-2025.jpg
+public/images/AISC-CDH-2.jpg
+public/images/AISC-CDH-4.jpg
+public/images/dash_foxy.png
+public/images/fireball_foxy.png
+public/images/poster-SEEAPP-2025.jpg
+public/images/present_vng.jpg
+public/images/wide_attack_foxy.png
+README.md
+src/app/globals.css
+src/app/layout.tsx
+src/app/page.tsx
+src/components/3d/NeuralNetwork.tsx
+src/components/3d/Scene.tsx
+src/components/3d/SkillOrbit.tsx
+src/components/sections/About.tsx
+src/components/sections/Achievements.tsx
+src/components/sections/Contact.tsx
+src/components/sections/Hero.tsx
+src/components/sections/Projects.tsx
+src/components/sections/Skills.tsx
+src/components/ui/BentoCard.tsx
+src/components/ui/GlassCard.tsx
+src/components/ui/GlowButton.tsx
+src/data/achievements.ts
+src/data/projects.ts
+src/data/skills.ts
+src/lib/utils.ts
+tsconfig.json
+</directory_structure>
+
+<files>
+This section contains the contents of the repository's files.
+
+<file path=".repomixignore">
+docs/*
+plans/*
+assets/*
+dist/*
+coverage/*
+build/*
+ios/*
+android/*
+tests/*
+__tests__/*
+__pycache__/*
+node_modules/*
+
+.opencode/*
+.claude/*
+.serena/*
+.pnpm-store/*
+.github/*
+.dart_tool/*
+.idea/*
+.husky/*
+.venv/*
+</file>
+
+<file path="CLAUDE.md">
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+## Role & Responsibilities
+
+Your role is to analyze user requirements, delegate tasks to appropriate sub-agents, and ensure cohesive delivery of features that meet specifications and architectural standards.
+
+## Workflows
+
+- Primary workflow: `./.claude/rules/primary-workflow.md`
+- Development rules: `./.claude/rules/development-rules.md`
+- Orchestration protocols: `./.claude/rules/orchestration-protocol.md`
+- Documentation management: `./.claude/rules/documentation-management.md`
+- And other workflows: `./.claude/rules/*`
+
+**IMPORTANT:** Analyze the skills catalog and activate the skills that are needed for the task during the process.
+**IMPORTANT:** You must follow strictly the development rules in `./.claude/rules/development-rules.md` file.
+**IMPORTANT:** Before you plan or proceed any implementation, always read the `./README.md` file first to get context.
+**IMPORTANT:** Sacrifice grammar for the sake of concision when writing reports.
+**IMPORTANT:** In reports, list any unresolved questions at the end, if any.
+
+## Hook Response Protocol
+
+### Privacy Block Hook (`@@PRIVACY_PROMPT@@`)
+
+When a tool call is blocked by the privacy-block hook, the output contains a JSON marker between `@@PRIVACY_PROMPT_START@@` and `@@PRIVACY_PROMPT_END@@`. **You MUST use the `AskUserQuestion` tool** to get proper user approval.
+
+**Required Flow:**
+
+1. Parse the JSON from the hook output
+2. Use `AskUserQuestion` with the question data from the JSON
+3. Based on user's selection:
+   - **"Yes, approve access"** → Use `bash cat "filepath"` to read the file (bash is auto-approved)
+   - **"No, skip this file"** → Continue without accessing the file
+
+**Example AskUserQuestion call:**
+```json
+{
+  "questions": [{
+    "question": "I need to read \".env\" which may contain sensitive data. Do you approve?",
+    "header": "File Access",
+    "options": [
+      { "label": "Yes, approve access", "description": "Allow reading .env this time" },
+      { "label": "No, skip this file", "description": "Continue without accessing this file" }
+    ],
+    "multiSelect": false
+  }]
+}
+```
+
+**IMPORTANT:** Always ask the user via `AskUserQuestion` first. Never try to work around the privacy block without explicit user approval.
+
+## Python Scripts (Skills)
+
+When running Python scripts from `.claude/skills/`, use the venv Python interpreter:
+- **Linux/macOS:** `.claude/skills/.venv/bin/python3 scripts/xxx.py`
+- **Windows:** `.claude\skills\.venv\Scripts\python.exe scripts\xxx.py`
+
+This ensures packages installed by `install.sh` (google-genai, pypdf, etc.) are available.
+
+**IMPORTANT:** When scripts of skills failed, don't stop, try to fix them directly.
+
+## [IMPORTANT] Consider Modularization
+- If a code file exceeds 200 lines of code, consider modularizing it
+- Check existing modules before creating new
+- Analyze logical separation boundaries (functions, classes, concerns)
+- Use kebab-case naming with long descriptive names, it's fine if the file name is long because this ensures file names are self-documenting for LLM tools (Grep, Glob, Search)
+- Write descriptive code comments
+- After modularization, continue with main task
+- When not to modularize: Markdown files, plain text files, bash scripts, configuration files, environment variables files, etc.
+
+## Documentation Management
+
+We keep all important docs in `./docs` folder and keep updating them, structure like below:
+
+```
+./docs
+├── project-overview-pdr.md
+├── code-standards.md
+├── codebase-summary.md
+├── design-guidelines.md
+├── deployment-guide.md
+├── system-architecture.md
+└── project-roadmap.md
+```
+
+**IMPORTANT:** *MUST READ* and *MUST COMPLY* all *INSTRUCTIONS* in project `./CLAUDE.md`, especially *WORKFLOWS* section is *CRITICALLY IMPORTANT*, this rule is *MANDATORY. NON-NEGOTIABLE. NO EXCEPTIONS. MUST REMEMBER AT ALL TIMES!!!*
+</file>
+
+<file path="README.md">
+# Elite Portfolio
+
+**AI Engineer & Full-Stack Generalist Portfolio**
+
+High-performance portfolio website featuring interactive 3D visualizations, scroll-triggered animations, and glassmorphism design system.
+
+## Quick Start
+
+```bash
+# Install dependencies
+npm install
+
+# Development server (http://localhost:3000)
+npm run dev
+
+# Production build
+npm run build
+
+# Lint
+npm run lint
+```
+
+## Tech Stack
+
+| Category | Technology | Version |
+|----------|------------|---------|
+| Framework | Next.js (App Router) | 16.1.6 |
+| UI Library | React | 19.2.4 |
+| Language | TypeScript | 5.9.3 |
+| Styling | Tailwind CSS | 4.1.18 |
+| Animation | Framer Motion | 12.29.2 |
+| 3D Engine | Three.js | 0.182.0 |
+| 3D React | React Three Fiber | 9.5.0 |
+| 3D Helpers | Drei | 10.7.7 |
+| Deployment | Netlify | Static Export |
+
+## Features
+
+- **Interactive 3D Neural Network**: 400 nodes with mouse attraction physics
+- **3D Skill Orbit**: Orbital rings displaying 30+ skills across 7 categories
+- **Bento Grid Projects**: Mouse-tracking spotlight cards
+- **Scroll Animations**: Framer Motion viewport triggers with stagger
+- **Glassmorphism Design**: Consistent blur, shadow, border system
+- **Static Export**: Zero server runtime, full CDN deployment
+- **Mobile Optimized**: Reduced node count, responsive layouts
+
+## Project Structure
+
+```
+src/
+├── app/
+│   ├── layout.tsx          # Root layout, fonts, metadata
+│   ├── page.tsx            # Main page composition
+│   └── globals.css         # Design tokens, animations
+│
+├── components/
+│   ├── 3d/
+│   │   ├── NeuralNetwork.tsx   # Interactive neural network
+│   │   ├── Scene.tsx           # R3F Canvas wrapper
+│   │   └── SkillOrbit.tsx      # 3D skill visualization
+│   │
+│   ├── sections/
+│   │   ├── Hero.tsx            # Landing section
+│   │   ├── About.tsx           # Bio section
+│   │   ├── Skills.tsx          # Skills section
+│   │   ├── Projects.tsx        # Projects grid
+│   │   ├── Achievements.tsx    # Timeline
+│   │   └── Contact.tsx         # Contact CTA
+│   │
+│   └── ui/
+│       ├── BentoCard.tsx       # Spotlight card
+│       ├── GlassCard.tsx       # Glass container
+│       └── GlowButton.tsx      # CTA button
+│
+├── data/
+│   ├── skills.ts           # 7 categories, 30+ skills
+│   ├── projects.ts         # 4 projects
+│   └── achievements.ts     # 4 achievements
+│
+└── lib/
+    └── utils.ts            # cn() utility
+```
+
+## Build Configuration
+
+### Static Export (next.config.ts)
+```typescript
+{
+  output: 'export',              // Static HTML/CSS/JS
+  images: { unoptimized: true }, // No image optimization
+  trailingSlash: true,           // URL normalization
+}
+```
+
+### Netlify (netlify.toml)
+```toml
+[build]
+  command = "npm run build"
+  publish = "out"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+```
+
+## Design System
+
+### Colors
+```css
+--bg-primary: #0A0A0F;         /* Near-black */
+--bg-surface: #12121A;         /* Cards */
+--border: #1E1E2E;             /* Subtle separation */
+--text-primary: #FAFAFA;       /* Main text */
+--text-secondary: #A1A1AA;     /* Secondary text */
+--accent: #ADFF2F;             /* Cyber Lime */
+--accent-glow: rgba(173, 255, 47, 0.3);
+```
+
+### Typography
+- **Display**: Geist (variable: `--font-geist`)
+- **Mono**: Geist Mono (variable: `--font-geist-mono`)
+- **Strategy**: `display: swap` (FOUT)
+
+### Glassmorphism Tokens
+```css
+background: rgba(18, 18, 26, 0.7);
+backdrop-filter: blur(12px);
+box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+border: 1px solid rgba(255, 255, 255, 0.1);
+```
+
+### Animation Tokens
+```css
+--duration-fast: 150ms;
+--ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+```
+
+## Development
+
+### Scripts
+```bash
+npm run dev     # Start dev server
+npm run build   # Build static export
+npm start       # Serve production build
+npm run lint    # Run ESLint
+```
+
+### Path Aliases
+```typescript
+"@/*" → "./src/*"
+```
+
+### TypeScript Config
+- **Strict mode**: Enabled
+- **Target**: ES2017
+- **Module**: ESNext (bundler)
+- **JSX**: react-jsx (React 19)
+
+## Deployment
+
+### Netlify Setup
+1. Connect GitHub repository
+2. Build command: `npm run build`
+3. Publish directory: `out`
+4. Plugin: `@netlify/plugin-nextjs` (auto-installed)
+
+### Environment
+- No environment variables required
+- All data embedded at build time
+- No server-side features
+
+## Performance
+
+### 3D Optimization
+- Device detection: CPU cores + user agent
+- Mobile: 160 nodes, 180 connections
+- Desktop: 400 nodes, 600 connections
+- DPR capped at [1, 2]
+- High-performance GPU preference
+
+### Bundle Size
+- Static export: Full tree-shaking
+- Dynamic imports: 3D components with `ssr: false`
+- Code splitting: Automatic per route
+
+## Browser Support
+
+- Chrome 90+
+- Firefox 88+
+- Safari 14+
+- Edge 90+
+
+Requires WebGL 2.0 for 3D features.
+
+## Documentation
+
+See [docs/](./docs/) for detailed documentation:
+
+- [Project Overview & PDR](./docs/project-overview-pdr.md)
+- [Code Standards](./docs/code-standards.md)
+- [System Architecture](./docs/system-architecture.md)
+- [Design Guidelines](./docs/design-guidelines.md)
+- [Deployment Guide](./docs/deployment-guide.md)
+- [Project Roadmap](./docs/project-roadmap.md)
+- [Codebase Summary](./docs/codebase-summary.md)
+
+## License
+
+MIT
+
+## Author
+
+**Duong Pham**
+AI Engineer & Full-Stack Generalist
+
+- Portfolio: [Link to deployed site]
+- GitHub: [GitHub profile]
+- LinkedIn: [LinkedIn profile]
+</file>
+
+<file path="elite-portfolio.md">
+# Elite End-to-End Engineer Portfolio
+
+> **Project Type:** WEB (Static Export)
+> **Primary Agent:** `frontend-specialist`
+> **Status:** PLANNING
+
+---
+
+## Overview
+
+Build a high-performance, single-page portfolio website for an AI Engineer & Full-stack Generalist. The site will showcase technical depth through an interactive 3D neural network hero, sophisticated Bento Grid layouts, and scroll-triggered animations.
+
+**Key Differentiator:** This isn't a template—it's a technical flex demonstrating mastery of Three.js, React, and modern web performance.
+
+---
+
+## Success Criteria
+
+| Metric | Target |
+|--------|--------|
+| Lighthouse Performance | 100/100 |
+| Lighthouse Accessibility | 100/100 |
+| First Contentful Paint | < 1.5s |
+| Layout Shift (CLS) | 0 |
+| Mobile 3D FPS | ≥ 30fps (throttled) |
+| Bundle Size (gzipped) | < 200KB (excluding 3D) |
+
+---
+
+## Tech Stack
+
+| Layer | Technology | Rationale |
+|-------|------------|-----------|
+| **Framework** | Next.js 14 (App Router) | Static export, React Server Components |
+| **Styling** | Tailwind CSS v4 | Utility-first, design tokens |
+| **Components** | Shadcn/ui | Accessible, unstyled primitives |
+| **Animation** | Framer Motion | Declarative, performant animations |
+| **3D** | React Three Fiber + Drei | Declarative Three.js with React |
+| **Fonts** | Geist (Vercel) | Modern, variable weight |
+| **Deploy** | Netlify | Static hosting, edge CDN |
+
+---
+
+## Design System
+
+### Theme: Deep Space / Obsidian (Dark Only)
+
+```
+Background:     #0A0A0F (near-black)
+Surface:        #12121A (cards, elevated)
+Border:         #1E1E2E (subtle separation)
+Text Primary:   #FAFAFA (white)
+Text Secondary: #A1A1AA (muted)
+Accent:         #ADFF2F (Cyber Lime)
+Accent Glow:    rgba(173, 255, 47, 0.3)
+```
+
+### Typography
+
+| Element | Font | Size | Weight |
+|---------|------|------|--------|
+| H1 (Hero) | Geist | 4rem/64px | 700 |
+| H2 (Section) | Geist | 2.5rem/40px | 600 |
+| H3 (Cards) | Geist | 1.5rem/24px | 600 |
+| Body | Geist | 1rem/16px | 400 |
+| Code | Geist Mono | 0.875rem | 400 |
+
+### Glassmorphism Tokens
+
+```css
+--glass-bg: rgba(18, 18, 26, 0.7);
+--glass-border: rgba(255, 255, 255, 0.1);
+--glass-blur: blur(12px);
+--glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+```
+
+---
+
+## File Structure
+
+```
+porfolio_web/
+├── src/
+│   ├── app/
+│   │   ├── layout.tsx          # Root layout + fonts
+│   │   ├── page.tsx            # Main page (all sections)
+│   │   └── globals.css         # Tailwind + custom properties
+│   │
+│   ├── components/
+│   │   ├── 3d/
+│   │   │   ├── NeuralNetwork.tsx    # Hero 3D component
+│   │   │   ├── SkillOrbit.tsx       # Skills 3D orbit
+│   │   │   └── Scene.tsx            # R3F Canvas wrapper
+│   │   │
+│   │   ├── sections/
+│   │   │   ├── Hero.tsx             # Hero section
+│   │   │   ├── Projects.tsx         # Bento grid
+│   │   │   ├── Skills.tsx           # Skill orbit section
+│   │   │   └── Achievements.tsx     # Timeline section
+│   │   │
+│   │   └── ui/
+│   │       ├── BentoCard.tsx        # Glass card with spotlight
+│   │       ├── GlassCard.tsx        # Base glass component
+│   │       ├── GlowButton.tsx       # CTA button
+│   │       └── Timeline.tsx         # Vertical timeline
+│   │
+│   ├── data/
+│   │   ├── projects.ts          # Project/hackathon data
+│   │   ├── skills.ts            # Skills with icons
+│   │   └── achievements.ts      # Award timeline data
+│   │
+│   ├── hooks/
+│   │   ├── useReducedMotion.ts  # Accessibility
+│   │   └── useDevicePerf.ts     # Mobile detection
+│   │
+│   └── lib/
+│       └── utils.ts             # cn() helper
+│
+├── public/
+│   └── fonts/                   # Geist font files
+│
+├── next.config.js               # Static export config
+├── tailwind.config.ts           # Design tokens
+└── package.json
+```
+
+---
+
+## Task Breakdown
+
+### Phase 1: Foundation (P0)
+
+#### Task 1.1: Scaffold Next.js Project
+| Field | Value |
+|-------|-------|
+| **Agent** | `frontend-specialist` |
+| **Skills** | `nextjs-react-expert` |
+| **Input** | Empty directory |
+| **Output** | Next.js 14 app with App Router |
+| **Verify** | `npm run dev` starts without errors |
+
+```bash
+npx create-next-app@latest ./ --typescript --tailwind --eslint --app --src-dir --import-alias "@/*" --use-npm
+```
+
+#### Task 1.2: Install Dependencies
+| Field | Value |
+|-------|-------|
+| **Agent** | `frontend-specialist` |
+| **Input** | Base Next.js project |
+| **Output** | All dependencies installed |
+| **Verify** | `npm list` shows all packages |
+
+```bash
+npm install @react-three/fiber @react-three/drei three framer-motion
+npm install -D @types/three
+npx shadcn@latest init
+```
+
+#### Task 1.3: Configure Design Tokens
+| Field | Value |
+|-------|-------|
+| **Agent** | `frontend-specialist` |
+| **Skills** | `tailwind-patterns`, `frontend-design` |
+| **Input** | Default Tailwind config |
+| **Output** | Custom theme with Cyber Lime, glass tokens |
+| **Verify** | Tailwind classes apply correctly in dev |
+
+---
+
+### Phase 2: 3D Components (P1)
+
+#### Task 2.1: Create Scene Wrapper
+| Field | Value |
+|-------|-------|
+| **Agent** | `frontend-specialist` |
+| **Skills** | `nextjs-react-expert` |
+| **Input** | R3F installed |
+| **Output** | `Scene.tsx` with Canvas, Suspense, error boundary |
+| **Verify** | Empty Canvas renders without hydration errors |
+
+**Key Considerations:**
+- Dynamic import with `ssr: false`
+- Suspense fallback (loading skeleton)
+- Performance hints: `dpr={[1, 2]}`, `frameloop="demand"`
+
+#### Task 2.2: Build Neural Network Hero
+| Field | Value |
+|-------|-------|
+| **Agent** | `frontend-specialist` |
+| **Skills** | `frontend-design` |
+| **Input** | Scene wrapper |
+| **Output** | Interactive neural network with ~500 nodes |
+| **Verify** | Mouse interaction visible, 60fps on desktop |
+
+**Implementation Details:**
+- Nodes: InstancedMesh for performance
+- Connections: LineSegments with custom shader
+- Mouse interaction: useFrame + lerp for smooth follow
+- Cyber Lime glow: emissive material + bloom optional
+
+#### Task 2.3: Mobile Performance Throttling
+| Field | Value |
+|-------|-------|
+| **Agent** | `frontend-specialist` |
+| **Skills** | `performance-profiling` |
+| **Input** | Neural network component |
+| **Output** | Reduced particles (200 nodes) on mobile |
+| **Verify** | Mobile FPS ≥ 30, no jank |
+
+**Detection Strategy:**
+```typescript
+const isMobile = /iPhone|iPad|Android/i.test(navigator.userAgent);
+const isLowPerf = navigator.hardwareConcurrency < 4;
+```
+
+---
+
+### Phase 3: UI Components (P1)
+
+#### Task 3.1: Create Glass Card Component
+| Field | Value |
+|-------|-------|
+| **Agent** | `frontend-specialist` |
+| **Skills** | `frontend-design` |
+| **Input** | Design tokens |
+| **Output** | Reusable `GlassCard.tsx` |
+| **Verify** | Renders with blur, border, correct colors |
+
+#### Task 3.2: Build Bento Grid with Spotlight
+| Field | Value |
+|-------|-------|
+| **Agent** | `frontend-specialist` |
+| **Skills** | `frontend-design`, `nextjs-react-expert` |
+| **Input** | GlassCard, project data |
+| **Output** | Responsive Bento Grid with hover spotlight |
+| **Verify** | Grid adapts to viewport, spotlight follows mouse |
+
+**Spotlight Effect:**
+```typescript
+// Track mouse position relative to card
+// Apply radial gradient at cursor position
+// Use CSS custom properties for performance
+```
+
+#### Task 3.3: Build Skill Orbit (3D)
+| Field | Value |
+|-------|-------|
+| **Agent** | `frontend-specialist` |
+| **Skills** | `frontend-design` |
+| **Input** | Scene wrapper, skills data |
+| **Output** | 3D orbiting skill icons |
+| **Verify** | Auto-rotation, hover pause, click handler |
+
+**Domains:**
+- AI Engineering (center)
+- Web Dev (orbit 1)
+- App Dev (orbit 2)
+- Game Dev (orbit 3)
+
+#### Task 3.4: Build Achievement Timeline
+| Field | Value |
+|-------|-------|
+| **Agent** | `frontend-specialist` |
+| **Skills** | `frontend-design` |
+| **Input** | Achievement data, Framer Motion |
+| **Output** | Scroll-triggered vertical timeline |
+| **Verify** | Items animate in on scroll, accessible |
+
+---
+
+### Phase 4: Data & Content (P2)
+
+#### Task 4.1: Create Data Files
+| Field | Value |
+|-------|-------|
+| **Agent** | `frontend-specialist` |
+| **Input** | TypeScript types |
+| **Output** | `projects.ts`, `skills.ts`, `achievements.ts` |
+| **Verify** | Types match usage, no TS errors |
+
+**Projects Schema:**
+```typescript
+interface Project {
+  id: string;
+  title: string;
+  description: string;
+  tags: string[];
+  image?: string;
+  link?: string;
+  featured: boolean;
+  hackathon?: {
+    name: string;
+    placement: string;
+  };
+}
+```
+
+#### Task 4.2: Assemble Main Page
+| Field | Value |
+|-------|-------|
+| **Agent** | `frontend-specialist` |
+| **Input** | All sections |
+| **Output** | Complete `page.tsx` |
+| **Verify** | All sections render, smooth scroll |
+
+---
+
+### Phase 5: Polish & Deploy (P3)
+
+#### Task 5.1: Static Export Configuration
+| Field | Value |
+|-------|-------|
+| **Agent** | `frontend-specialist` |
+| **Input** | Completed site |
+| **Output** | `next.config.js` with `output: 'export'` |
+| **Verify** | `npm run build` produces `/out` folder |
+
+#### Task 5.2: Performance Optimization
+| Field | Value |
+|-------|-------|
+| **Agent** | `frontend-specialist` |
+| **Skills** | `performance-profiling` |
+| **Input** | Built site |
+| **Output** | Optimized bundle, lazy loading |
+| **Verify** | Lighthouse 100/100 |
+
+**Checklist:**
+- [ ] Dynamic imports for 3D
+- [ ] Image optimization (if any)
+- [ ] Font preloading
+- [ ] CSS purging
+
+---
+
+## Phase X: Verification
+
+### Automated Tests
+
+```bash
+# Lint & Types
+npm run lint
+npx tsc --noEmit
+
+# Build verification
+npm run build
+
+# Lighthouse (requires dev server)
+npm run dev &
+python .agent/skills/performance-profiling/scripts/lighthouse_audit.py http://localhost:3000
+```
+
+### Manual Verification
+
+| Check | Steps |
+|-------|-------|
+| 3D Hero | Open site → Move mouse → Neural network reacts |
+| Mobile 3D | Open DevTools → Toggle mobile → FPS remains smooth |
+| Spotlight | Hover project cards → Gradient follows cursor |
+| Timeline | Scroll to achievements → Items animate in |
+| Static Export | Run `npm run build` → Check `/out` folder exists |
+
+### Verification Checklist
+
+- [ ] Lint passes (no errors)
+- [ ] TypeScript compiles (no errors)
+- [ ] Build succeeds
+- [ ] All sections render
+- [ ] 3D works on desktop (60fps)
+- [ ] 3D throttled on mobile (30fps)
+- [ ] Spotlight effect works
+- [ ] Timeline animates
+- [ ] Static export works
+- [ ] Lighthouse ≥ 95 all categories
+
+---
+
+## Risks & Mitigations
+
+| Risk | Impact | Mitigation |
+|------|--------|------------|
+| 3D hydration errors | High | Dynamic import with `ssr: false` |
+| Mobile performance | Medium | Aggressive throttling, reduce geometry |
+| Bundle size | Medium | Code splitting, dynamic imports |
+| Browser compatibility | Low | Progressive enhancement |
+
+---
+
+## Next Steps After Approval
+
+1. Run `/create` or `/enhance` to start implementation
+2. Begin with Task 1.1 (scaffold project)
+3. Implement foundation → 3D → UI → Polish
+</file>
+
+<file path="next.config.ts">
+import type { NextConfig } from 'next'
+
+const nextConfig: NextConfig = {
+  output: 'export',
+  images: {
+    unoptimized: true,
+  },
+  // Disable server-side features for static export
+  trailingSlash: true,
+}
+
+export default nextConfig
+</file>
+
+<file path="package.json">
+{
+  "name": "elite-portfolio",
+  "version": "1.0.0",
+  "description": "Elite End-to-End Engineer Portfolio",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@react-three/drei": "^10.7.7",
+    "@react-three/fiber": "^9.5.0",
+    "@tailwindcss/postcss": "^4.1.18",
+    "autoprefixer": "^10.4.23",
+    "clsx": "^2.1.1",
+    "framer-motion": "^12.29.2",
+    "next": "^16.1.6",
+    "postcss": "^8.5.6",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "tailwind-merge": "^3.4.0",
+    "tailwindcss": "^4.1.18",
+    "three": "^0.182.0"
+  },
+  "devDependencies": {
+    "@types/node": "^25.1.0",
+    "@types/react": "^19.2.10",
+    "@types/react-dom": "^19.2.3",
+    "@types/three": "^0.182.0",
+    "eslint": "^9.39.2",
+    "eslint-config-next": "^16.1.6",
+    "typescript": "^5.9.3"
+  }
+}
+</file>
+
+<file path="postcss.config.mjs">
+const config = {
+  plugins: {
+    "@tailwindcss/postcss": {},
+  },
+};
+
+export default config;
+</file>
+
+<file path="public/icon.svg">
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="256" cy="256" r="256" fill="#0A0A0F"/>
+  <path d="M256 96L394.564 176V336L256 416L117.436 336V176L256 96Z" stroke="#ADFF2F" stroke-width="24" stroke-linejoin="round"/>
+  <path d="M256 200V312" stroke="#ADFF2F" stroke-width="24" stroke-linecap="round"/>
+  <circle cx="256" cy="256" r="32" fill="#ADFF2F"/>
+</svg>
+</file>
+
+<file path="src/app/globals.css">
+@import "tailwindcss";
+
+/* ========================================
+   ELITE PORTFOLIO - DESIGN TOKENS
+   Deep Space / Obsidian Theme + Cyber Lime
+   ======================================== */
+
+@theme {
+  /* Colors - Deep Space Theme */
+  --color-background: #0A0A0F;
+  --color-surface: #12121A;
+  --color-surface-elevated: #1A1A24;
+  --color-border: #1E1E2E;
+  --color-border-subtle: rgba(255, 255, 255, 0.06);
+  
+  /* Text Colors */
+  --color-text-primary: #FAFAFA;
+  --color-text-secondary: #A1A1AA;
+  --color-text-muted: #71717A;
+  
+  /* Accent - Cyber Lime */
+  --color-accent: #ADFF2F;
+  --color-accent-dim: #8BCC26;
+  --color-accent-glow: rgba(173, 255, 47, 0.3);
+  --color-accent-subtle: rgba(173, 255, 47, 0.1);
+  
+  /* Glassmorphism */
+  --glass-bg: rgba(18, 18, 26, 0.7);
+  --glass-bg-hover: rgba(26, 26, 36, 0.8);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-border-hover: rgba(255, 255, 255, 0.15);
+  --glass-blur: 12px;
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  
+  /* Typography Scale */
+  --font-display: 'Geist', system-ui, -apple-system, sans-serif;
+  --font-body: 'Geist', system-ui, -apple-system, sans-serif;
+  --font-mono: 'Geist Mono', ui-monospace, monospace;
+  
+  /* Spacing */
+  --spacing-section: 6rem;
+  --spacing-card: 1.5rem;
+  
+  /* Animations */
+  --duration-fast: 150ms;
+  --duration-normal: 300ms;
+  --duration-slow: 500ms;
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ========================================
+   BASE STYLES
+   ======================================== */
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--color-background);
+  color: var(--color-text-primary);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Selection */
+::selection {
+  background-color: var(--color-accent);
+  color: var(--color-background);
+}
+
+/* ========================================
+   UTILITY CLASSES
+   ======================================== */
+
+/* Glass Card Base */
+.glass {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--glass-border);
+  border-radius: 1rem;
+  box-shadow: var(--glass-shadow);
+}
+
+.glass:hover {
+  background: var(--glass-bg-hover);
+  border-color: var(--glass-border-hover);
+}
+
+/* Glow Effects */
+.glow-lime {
+  box-shadow: 0 0 20px var(--color-accent-glow),
+              0 0 40px rgba(173, 255, 47, 0.15);
+}
+
+.text-glow-lime {
+  text-shadow: 0 0 20px var(--color-accent-glow);
+}
+
+/* Gradient Text */
+.gradient-text {
+  background: linear-gradient(135deg, var(--color-text-primary) 0%, var(--color-accent) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Spotlight Effect (for cards) */
+.spotlight-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.spotlight-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+    var(--color-accent-subtle),
+    transparent 40%
+  );
+  opacity: 0;
+  transition: opacity var(--duration-normal) var(--ease-out-expo);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.spotlight-card:hover::before {
+  opacity: 1;
+}
+
+/* ========================================
+   ANIMATIONS
+   ======================================== */
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.6s var(--ease-out-expo) forwards;
+}
+
+/* ========================================
+   SCROLLBAR
+   ======================================== */
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-background);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-muted);
+}
+</file>
+
+<file path="src/components/3d/Scene.tsx">
+'use client'
+
+import { Canvas } from '@react-three/fiber'
+import { Preload } from '@react-three/drei'
+import { Suspense, ReactNode } from 'react'
+
+interface SceneProps {
+  children: ReactNode
+  className?: string
+}
+
+function SceneLoader() {
+  return (
+    <div className="absolute inset-0 flex items-center justify-center">
+      <div className="w-8 h-8 border-2 border-[#ADFF2F] border-t-transparent rounded-full animate-spin" />
+    </div>
+  )
+}
+
+export default function Scene({ children, className = '' }: SceneProps) {
+  return (
+    <div className={`relative ${className}`}>
+      <Suspense fallback={<SceneLoader />}>
+        <Canvas
+          dpr={[1, 2]}
+          camera={{ position: [0, 0, 5], fov: 50 }}
+          gl={{ 
+            antialias: true,
+            alpha: true,
+            powerPreference: 'high-performance'
+          }}
+          style={{ background: 'transparent' }}
+        >
+          {children}
+          <Preload all />
+        </Canvas>
+      </Suspense>
+    </div>
+  )
+}
+</file>
+
+<file path="src/components/3d/SkillOrbit.tsx">
+'use client'
+
+import { useRef, useMemo } from 'react'
+import { useFrame } from '@react-three/fiber'
+import { Text, Float } from '@react-three/drei'
+import * as THREE from 'three'
+import { skillCategories } from '@/data/skills'
+
+interface SkillOrbitProps {
+  autoRotate?: boolean
+  rotationSpeed?: number
+}
+
+interface OrbitRingProps {
+  radius: number
+  color: string
+  items: { name: string; level: number }[]
+  rotationSpeed: number
+  rotationOffset: number
+}
+
+function OrbitRing({ radius, color, items, rotationSpeed, rotationOffset }: OrbitRingProps) {
+  const groupRef = useRef<THREE.Group>(null)
+  
+  useFrame((state) => {
+    if (groupRef.current) {
+      groupRef.current.rotation.y = state.clock.elapsedTime * rotationSpeed + rotationOffset
+    }
+  })
+  
+  return (
+    <group ref={groupRef}>
+      {/* Orbit ring line */}
+      <mesh rotation={[Math.PI / 2, 0, 0]}>
+        <ringGeometry args={[radius - 0.01, radius + 0.01, 64]} />
+        <meshBasicMaterial color={color} transparent opacity={0.2} side={THREE.DoubleSide} />
+      </mesh>
+      
+      {/* Skill nodes on the orbit */}
+      {items.map((skill, idx) => {
+        const angle = (idx / items.length) * Math.PI * 2
+        const x = Math.cos(angle) * radius
+        const z = Math.sin(angle) * radius
+        
+        return (
+          <Float key={skill.name} speed={2} floatIntensity={0.3}>
+            <group position={[x, 0, z]}>
+              {/* Node sphere */}
+              <mesh>
+                <sphereGeometry args={[0.08, 16, 16]} />
+                <meshBasicMaterial 
+                  color={color} 
+                  transparent 
+                  opacity={0.8 + (skill.level / 500)}
+                />
+              </mesh>
+              
+              {/* Skill label */}
+              <Text
+                position={[0, 0.15, 0]}
+                fontSize={0.08}
+                color="#FAFAFA"
+                anchorX="center"
+                anchorY="bottom"
+                outlineWidth={0.01}
+                outlineColor="#0A0A0F"
+              >
+                {skill.name}
+              </Text>
+            </group>
+          </Float>
+        )
+      })}
+    </group>
+  )
+}
+
+export default function SkillOrbit({ 
+  autoRotate = true, 
+  rotationSpeed = 0.1 
+}: SkillOrbitProps) {
+  const groupRef = useRef<THREE.Group>(null)
+  
+  // Map skill categories to orbit rings
+  const orbits = useMemo(() => {
+    return skillCategories.map((category, idx) => ({
+      id: category.id,
+      name: category.name,
+      color: category.color,
+      radius: 0.8 + idx * 0.5,
+      items: category.skills.slice(0, 5).map(s => ({ name: s.name, level: s.level })),
+      speed: (0.15 - idx * 0.02) * (idx % 2 === 0 ? 1 : -1),
+      offset: (idx * Math.PI) / skillCategories.length
+    }))
+  }, [])
+  
+  return (
+    <group ref={groupRef} scale={[1.5, 1.5, 1.5]}>
+      {/* Center - AI Engineering label */}
+      <Float speed={1} floatIntensity={0.5}>
+        <mesh>
+          <sphereGeometry args={[0.2, 32, 32]} />
+          <meshBasicMaterial color="#ADFF2F" transparent opacity={0.3} />
+        </mesh>
+        <Text
+          position={[0, 0.35, 0]}
+          fontSize={0.12}
+          color="#ADFF2F"
+          anchorX="center"
+          fontWeight={700}
+        >
+          AI Core
+        </Text>
+      </Float>
+      
+      {/* Orbit rings */}
+      {orbits.map((orbit) => (
+        <OrbitRing
+          key={orbit.id}
+          radius={orbit.radius}
+          color={orbit.color}
+          items={orbit.items}
+          rotationSpeed={autoRotate ? orbit.speed : 0}
+          rotationOffset={orbit.offset}
+        />
+      ))}
+      
+      {/* Ambient lighting */}
+      <ambientLight intensity={0.6} />
+      <pointLight position={[0, 0, 0]} color="#ADFF2F" intensity={0.3} />
+    </group>
+  )
+}
+</file>
+
+<file path="src/components/sections/About.tsx">
+'use client'
+
+import { motion } from 'framer-motion'
+import GlassCard from '@/components/ui/GlassCard'
+
+export default function About() {
+  const highlights = [
+    {
+      icon: '🧠',
+      title: 'AI Engineering',
+      description: 'Building autonomous agent frameworks & LLM orchestration.'
+    },
+    {
+      icon: '⚡',
+      title: 'Full-Stack',
+      description: 'End-to-end capabilities in Web, Mobile, Game, and Backend.'
+    },
+    {
+      icon: '🏆',
+      title: 'Hackathons',
+      description: 'Turning creative ideas into reality under high pressure.'
+    }
+  ]
+
+  return (
+    <section id="about" className="py-24 px-6 relative z-10">
+      <div className="max-w-5xl mx-auto">
+        <div className="grid md:grid-cols-2 gap-12 items-center">
+          {/* Text Content */}
+          <motion.div
+            initial={{ opacity: 0, x: -30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, margin: '-50px' }}
+            transition={{ duration: 0.6 }}
+          >
+            <h2 className="text-4xl md:text-5xl font-bold mb-6">
+              <span className="text-[#FAFAFA]">About </span>
+              <span className="text-[#ADFF2F]">Me</span>
+            </h2>
+            
+            <GlassCard className="p-8 mb-8 bg-[rgba(18,18,26,0.4)]">
+              <p className="text-[#A1A1AA] text-lg leading-relaxed mb-6">
+                I am an <span className="text-[#ADFF2F]">AI Engineer & Full-Stack Generalist</span> passionate about building innovative, high-performance products from 0 to 1. 
+              </p>
+              <p className="text-[#A1A1AA] text-lg leading-relaxed">
+                My focus encompasses cutting-edge <span className="text-[#FAFAFA]">AI Agent frameworks</span>, scalable infrastructure, and deep tech. I thrive in high-pressure environments like Hackathons, where I turn abstract creative ideas into tangible, winning solutions.
+              </p>
+            </GlassCard>
+
+            <div className="flex flex-wrap gap-3">
+              {[
+                { icon: '📍', text: 'Based in Vietnam' },
+                { icon: '🚀', text: 'Open to Collaboration' },
+                { icon: '�', text: 'Always Learning' },
+                { icon: '🧩', text: 'Seeking Innovative Ideas' }
+              ].map((tag) => (
+                <span 
+                  key={tag.text} 
+                  className="px-3 py-1.5 rounded-full bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.1)] text-[#A1A1AA] text-sm flex items-center gap-2 hover:border-[#ADFF2F] hover:text-[#FAFAFA] transition-colors cursor-default"
+                >
+                  <span>{tag.icon}</span>
+                  <span>{tag.text}</span>
+                </span>
+              ))}
+            </div>
+          </motion.div>
+
+          {/* Highlights Grid */}
+          <motion.div
+            initial={{ opacity: 0, x: 30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, margin: '-50px' }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="grid gap-4"
+          >
+            {highlights.map((item, idx) => (
+              <GlassCard 
+                key={item.title}
+                className="p-6 flex items-start gap-4 hover:border-[#ADFF2F] transition-colors group"
+              >
+                <div className="text-4xl bg-[rgba(173,255,47,0.1)] w-16 h-16 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                  {item.icon}
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold text-[#FAFAFA] mb-1 group-hover:text-[#ADFF2F] transition-colors">{item.title}</h3>
+                  <p className="text-[#A1A1AA]">{item.description}</p>
+                </div>
+              </GlassCard>
+            ))}
+          </motion.div>
+        </div>
+      </div>
+    </section>
+  )
+}
+</file>
+
+<file path="src/components/sections/Skills.tsx">
+'use client'
+
+import dynamic from 'next/dynamic'
+import { motion } from 'framer-motion'
+import { skillCategories } from '@/data/skills'
+
+// Dynamic import for 3D components (SSR disabled)
+const Scene = dynamic(() => import('@/components/3d/Scene'), { ssr: false })
+const SkillOrbit = dynamic(() => import('@/components/3d/SkillOrbit'), { ssr: false })
+
+export default function Skills() {
+  return (
+    <section id="skills" className="py-24 px-6 relative overflow-hidden">
+      <div className="max-w-7xl mx-auto">
+        <div className="grid lg:grid-cols-2 gap-12 items-center">
+          {/* Left: 3D Skill Orbit */}
+          <motion.div
+            initial={{ opacity: 0, x: -50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, margin: '-100px' }}
+            transition={{ duration: 0.8 }}
+            className="relative h-[500px] order-2 lg:order-1"
+          >
+            <Scene className="w-full h-full">
+              <SkillOrbit autoRotate rotationSpeed={0.15} />
+            </Scene>
+            
+            {/* Gradient fade */}
+            <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(ellipse_at_center,_transparent_30%,_#0A0A0F_80%)]" />
+          </motion.div>
+          
+          {/* Right: Content */}
+          <motion.div
+            initial={{ opacity: 0, x: 50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, margin: '-100px' }}
+            transition={{ duration: 0.8 }}
+            className="order-1 lg:order-2"
+          >
+            <h2 className="text-4xl md:text-5xl font-bold mb-6">
+              <span className="text-[#FAFAFA]">End-to-End </span>
+              <span className="text-[#ADFF2F]">Expertise</span>
+            </h2>
+            
+            <p className="text-[#A1A1AA] text-lg mb-8 leading-relaxed">
+              From concept to deployment, I build across the entire stack. 
+              AI at the core, with deep expertise spanning web, mobile, and game development.
+            </p>
+            
+            {/* Skill Categories */}
+            <div className="space-y-4">
+              {skillCategories.map((category, idx) => (
+                <motion.div
+                  key={category.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: idx * 0.1 }}
+                  className="p-4 rounded-xl bg-[rgba(18,18,26,0.5)] border border-[rgba(255,255,255,0.06)] hover:border-[rgba(255,255,255,0.1)] transition-colors"
+                >
+                  <div className="flex items-center gap-3 mb-2">
+                    <div 
+                      className="w-3 h-3 rounded-full"
+                      style={{ backgroundColor: category.color }}
+                    />
+                    <h3 className="text-lg font-semibold text-[#FAFAFA]">
+                      {category.name}
+                    </h3>
+                  </div>
+                  <p className="text-sm text-[#71717A] mb-3">
+                    {category.description}
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {category.skills.slice(0, 4).map((skill) => (
+                      <span
+                        key={skill.id}
+                        className="px-2 py-1 text-xs rounded bg-[rgba(255,255,255,0.05)] text-[#A1A1AA]"
+                      >
+                        {skill.name}
+                      </span>
+                    ))}
+                    {category.skills.length > 4 && (
+                      <span className="px-2 py-1 text-xs text-[#71717A]">
+                        +{category.skills.length - 4} more
+                      </span>
+                    )}
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+        </div>
+      </div>
+    </section>
+  )
+}
+</file>
+
+<file path="src/components/ui/BentoCard.tsx">
+'use client'
+
+import { useRef, useState, MouseEvent, ReactNode } from 'react'
+import { cn } from '@/lib/utils'
+
+interface BentoCardProps {
+  children: ReactNode
+  className?: string
+  spotlight?: boolean
+  featured?: boolean
+}
+
+export default function BentoCard({ 
+  children, 
+  className = '',
+  spotlight = true,
+  featured = false
+}: BentoCardProps) {
+  const cardRef = useRef<HTMLDivElement>(null)
+  const [mousePosition, setMousePosition] = useState({ x: 50, y: 50 })
+  const [isHovered, setIsHovered] = useState(false)
+  
+  const handleMouseMove = (e: MouseEvent<HTMLDivElement>) => {
+    if (!cardRef.current || !spotlight) return
+    
+    const rect = cardRef.current.getBoundingClientRect()
+    const x = ((e.clientX - rect.left) / rect.width) * 100
+    const y = ((e.clientY - rect.top) / rect.height) * 100
+    
+    setMousePosition({ x, y })
+  }
+  
+  return (
+    <div
+      ref={cardRef}
+      onMouseMove={handleMouseMove}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      className={cn(
+        'relative rounded-2xl p-6 overflow-hidden',
+        'bg-[rgba(18,18,26,0.7)]',
+        'backdrop-blur-xl',
+        'border border-[rgba(255,255,255,0.1)]',
+        'shadow-[0_8px_32px_rgba(0,0,0,0.4)]',
+        'transition-all duration-300 ease-out',
+        'hover:border-[rgba(255,255,255,0.2)]',
+        'hover:shadow-[0_12px_40px_rgba(0,0,0,0.5)]',
+        featured && 'border-[rgba(173,255,47,0.2)]',
+        featured && 'hover:border-[rgba(173,255,47,0.4)]',
+        className
+      )}
+      style={{
+        '--mouse-x': `${mousePosition.x}%`,
+        '--mouse-y': `${mousePosition.y}%`,
+      } as React.CSSProperties}
+    >
+      {/* Spotlight gradient overlay */}
+      {spotlight && (
+        <div
+          className={cn(
+            'absolute inset-0 pointer-events-none z-10',
+            'transition-opacity duration-300',
+            isHovered ? 'opacity-100' : 'opacity-0'
+          )}
+          style={{
+            background: `radial-gradient(600px circle at ${mousePosition.x}% ${mousePosition.y}%, rgba(173, 255, 47, 0.1), transparent 40%)`,
+          }}
+        />
+      )}
+      
+      {/* Gradient border effect on hover */}
+      {featured && (
+        <div
+          className={cn(
+            'absolute inset-0 rounded-2xl pointer-events-none',
+            'transition-opacity duration-300',
+            isHovered ? 'opacity-100' : 'opacity-0'
+          )}
+          style={{
+            background: `radial-gradient(400px circle at ${mousePosition.x}% ${mousePosition.y}%, rgba(173, 255, 47, 0.15), transparent 50%)`,
+          }}
+        />
+      )}
+      
+      {/* Content */}
+      <div className="relative z-20">
+        {children}
+      </div>
+    </div>
+  )
+}
+</file>
+
+<file path="src/components/ui/GlassCard.tsx">
+'use client'
+
+import { ReactNode } from 'react'
+import { cn } from '@/lib/utils'
+
+interface GlassCardProps {
+  children: ReactNode
+  className?: string
+  hover?: boolean
+}
+
+export default function GlassCard({ 
+  children, 
+  className = '',
+  hover = true 
+}: GlassCardProps) {
+  return (
+    <div
+      className={cn(
+        'relative rounded-2xl p-6',
+        'bg-[rgba(18,18,26,0.7)]',
+        'backdrop-blur-xl',
+        'border border-[rgba(255,255,255,0.1)]',
+        'shadow-[0_8px_32px_rgba(0,0,0,0.4)]',
+        hover && 'transition-all duration-300 ease-out',
+        hover && 'hover:bg-[rgba(26,26,36,0.8)]',
+        hover && 'hover:border-[rgba(255,255,255,0.15)]',
+        hover && 'hover:shadow-[0_12px_40px_rgba(0,0,0,0.5)]',
+        className
+      )}
+    >
+      {children}
+    </div>
+  )
+}
+</file>
+
+<file path="src/lib/utils.ts">
+import { type ClassValue, clsx } from 'clsx'
+import { twMerge } from 'tailwind-merge'
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs))
+}
+</file>
+
+<file path="tsconfig.json">
+{
+  "compilerOptions": {
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "react-jsx",
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ]
+    },
+    "target": "ES2017"
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    ".next/dev/types/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}
+</file>
+
+<file path=".gitignore">
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Build outputs
+.next/
+out/
+build/
+dist/
+
+# Testing
+coverage/
+
+# Production
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# IDE & Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# Vercel
+.vercel
+
+# Debug
+.debug/
+
+# Cache
+.cache/
+.eslintcache
+*.cache
+
+# Misc
+Thumbs.db
+.vite/
+# Local Netlify folder
+.netlify
+.claude/
+.agent/
+</file>
+
+<file path="netlify.toml">
+[build]
+  command = "npm run build"
+  publish = "out"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+</file>
+
+<file path="src/app/layout.tsx">
+import type { Metadata } from 'next'
+import { Geist, Geist_Mono } from 'next/font/google'
+import './globals.css'
+
+const geist = Geist({
+  variable: '--font-geist',
+  subsets: ['latin'],
+  display: 'swap',
+})
+
+const geistMono = Geist_Mono({
+  variable: '--font-geist-mono',
+  subsets: ['latin'],
+  display: 'swap',
+})
+
+export const metadata: Metadata = {
+  title: 'Duong Pham | AI Engineer & Full-Stack Generalist',
+  description: 'High-performance portfolio showcasing end-to-end product development, AI engineering, and hackathon wins.',
+  keywords: ['AI Engineer', 'Full-Stack Developer', 'Web Developer', 'App Developer', 'Game Developer', 'Hackathon Winner'],
+  authors: [{ name: 'Duong Pham' }],
+  openGraph: {
+    title: 'Duong Pham | AI Engineer & Full-Stack Generalist',
+    description: 'High-performance portfolio showcasing end-to-end product development.',
+    type: 'website',
+  },
+  icons: {
+    icon: '/icon.svg',
+  },
+}
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode
+}>) {
+  return (
+    <html lang="en" className="dark">
+      <body className={`${geist.variable} ${geistMono.variable} antialiased`}>
+        {children}
+      </body>
+    </html>
+  )
+}
+</file>
+
+<file path="src/app/page.tsx">
+import Hero from '@/components/sections/Hero'
+import About from '@/components/sections/About'
+import Projects from '@/components/sections/Projects'
+import Skills from '@/components/sections/Skills'
+import Achievements from '@/components/sections/Achievements'
+import Contact from '@/components/sections/Contact'
+
+export default function Home() {
+  return (
+    <main className="min-h-screen bg-[#0A0A0F]">
+      <Hero />
+      <About />
+      <Projects />
+      <Skills />
+      <Achievements />
+      <Contact />
+    </main>
+  )
+}
+</file>
+
+<file path="src/components/3d/NeuralNetwork.tsx">
+'use client'
+
+import { useRef, useMemo, useEffect, useState } from 'react'
+import { useFrame, useThree } from '@react-three/fiber'
+import * as THREE from 'three'
+
+interface NeuralNetworkProps {
+  nodeCount?: number
+  connectionCount?: number
+  color?: string
+  responsive?: boolean
+}
+
+// Detect if device is low-performance (mobile or low hardware)
+function useDevicePerformance() {
+  const [isLowPerf, setIsLowPerf] = useState(false)
+  
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
+      const hasLowCores = navigator.hardwareConcurrency < 4
+      setIsLowPerf(isMobile || hasLowCores)
+    }
+  }, [])
+  
+  return isLowPerf
+}
+
+export default function NeuralNetwork({
+  nodeCount = 400,
+  connectionCount = 600,
+  color = '#ADFF2F',
+  responsive = true
+}: NeuralNetworkProps) {
+  const isLowPerf = useDevicePerformance()
+  const groupRef = useRef<THREE.Group>(null)
+  const pointsRef = useRef<THREE.Points>(null)
+  const linesRef = useRef<THREE.LineSegments>(null)
+  const mouseRef = useRef({ x: 0, y: 0 })
+  const { viewport } = useThree()
+  
+  // Reduce complexity on mobile
+  const actualNodeCount = responsive && isLowPerf ? Math.floor(nodeCount * 0.4) : nodeCount
+  const actualConnectionCount = responsive && isLowPerf ? Math.floor(connectionCount * 0.3) : connectionCount
+  
+  // Generate node positions in a spherical distribution
+  const { positions, originalPositions } = useMemo(() => {
+    const positions = new Float32Array(actualNodeCount * 3)
+    const originalPositions = new Float32Array(actualNodeCount * 3)
+    
+    for (let i = 0; i < actualNodeCount; i++) {
+      // Spherical distribution with some randomness
+      const theta = Math.random() * Math.PI * 2
+      const phi = Math.acos(2 * Math.random() - 1)
+      const radius = 1.5 + Math.random() * 0.5
+      
+      const x = radius * Math.sin(phi) * Math.cos(theta)
+      const y = radius * Math.sin(phi) * Math.sin(theta)
+      const z = radius * Math.cos(phi)
+      
+      positions[i * 3] = x
+      positions[i * 3 + 1] = y
+      positions[i * 3 + 2] = z
+      
+      originalPositions[i * 3] = x
+      originalPositions[i * 3 + 1] = y
+      originalPositions[i * 3 + 2] = z
+    }
+    
+    return { positions, originalPositions }
+  }, [actualNodeCount])
+  
+  // Generate connections between nearby nodes
+  const linePositions = useMemo(() => {
+    const linePositions = new Float32Array(actualConnectionCount * 6)
+    const connections: [number, number][] = []
+    
+    // Create connections between nearby nodes
+    for (let i = 0; i < actualNodeCount && connections.length < actualConnectionCount; i++) {
+      for (let j = i + 1; j < actualNodeCount && connections.length < actualConnectionCount; j++) {
+        const dx = positions[i * 3] - positions[j * 3]
+        const dy = positions[i * 3 + 1] - positions[j * 3 + 1]
+        const dz = positions[i * 3 + 2] - positions[j * 3 + 2]
+        const distance = Math.sqrt(dx * dx + dy * dy + dz * dz)
+        
+        // Connect nodes that are close enough
+        if (distance < 0.8 && Math.random() > 0.5) {
+          connections.push([i, j])
+        }
+      }
+    }
+    
+    connections.forEach(([a, b], idx) => {
+      linePositions[idx * 6] = positions[a * 3]
+      linePositions[idx * 6 + 1] = positions[a * 3 + 1]
+      linePositions[idx * 6 + 2] = positions[a * 3 + 2]
+      linePositions[idx * 6 + 3] = positions[b * 3]
+      linePositions[idx * 6 + 4] = positions[b * 3 + 1]
+      linePositions[idx * 6 + 5] = positions[b * 3 + 2]
+    })
+    
+    return linePositions
+  }, [positions, actualNodeCount, actualConnectionCount])
+  
+  // Track mouse position
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      mouseRef.current.x = (e.clientX / window.innerWidth) * 2 - 1
+      mouseRef.current.y = -(e.clientY / window.innerHeight) * 2 + 1
+    }
+    
+    window.addEventListener('mousemove', handleMouseMove)
+    return () => window.removeEventListener('mousemove', handleMouseMove)
+  }, [])
+  
+  // Animation loop
+  useFrame((state, delta) => {
+    if (!groupRef.current || !pointsRef.current) return
+    
+    const time = state.clock.elapsedTime
+    
+    // Rotate the entire group slowly
+    groupRef.current.rotation.y += delta * 0.05
+    
+    // Animate node positions with mouse attraction effect
+    const positionAttr = pointsRef.current.geometry.attributes.position as THREE.BufferAttribute
+    
+    // Convert mouse position to 3D world coordinates
+    const mouseX = mouseRef.current.x * 2
+    const mouseY = mouseRef.current.y * 2
+    
+    // Attraction parameters
+    const attractionRadius = 1.5  // How far the effect reaches
+    const attractionStrength = 0.4 // How strong the pull is
+    const returnSpeed = 0.08 // How fast nodes return to original position
+    
+    for (let i = 0; i < actualNodeCount; i++) {
+      const ox = originalPositions[i * 3]
+      const oy = originalPositions[i * 3 + 1]
+      const oz = originalPositions[i * 3 + 2]
+      
+      // Current position
+      const cx = positionAttr.getX(i)
+      const cy = positionAttr.getY(i)
+      const cz = positionAttr.getZ(i)
+      
+      // Calculate distance from mouse in 2D (projected)
+      const dx = mouseX - ox
+      const dy = mouseY - oy
+      const distanceToMouse = Math.sqrt(dx * dx + dy * dy)
+      
+      // Target position (with attraction effect)
+      let targetX = ox
+      let targetY = oy
+      let targetZ = oz
+      
+      if (distanceToMouse < attractionRadius) {
+        // Nodes within radius get attracted towards mouse
+        const attractionFactor = (1 - distanceToMouse / attractionRadius) * attractionStrength
+        targetX = ox + dx * attractionFactor
+        targetY = oy + dy * attractionFactor
+        // Z-axis: nodes push forward (towards camera) when attracted
+        targetZ = oz + attractionFactor * 0.3
+      }
+      
+      // Add subtle breathing animation
+      const breathe = Math.sin(time + i * 0.1) * 0.015
+      targetX += breathe
+      targetY += Math.sin(time * 0.5 + i * 0.2) * 0.015
+      
+      // Smoothly interpolate to target position
+      const newX = cx + (targetX - cx) * returnSpeed
+      const newY = cy + (targetY - cy) * returnSpeed
+      const newZ = cz + (targetZ - cz) * returnSpeed
+      
+      positionAttr.setXYZ(i, newX, newY, newZ)
+    }
+    
+    positionAttr.needsUpdate = true
+    
+    // Also update line positions to follow nodes
+    if (linesRef.current) {
+      const lineAttr = linesRef.current.geometry.attributes.position as THREE.BufferAttribute
+      lineAttr.needsUpdate = true
+    }
+  })
+  
+  const scale = Math.min(viewport.width, viewport.height) * 0.4
+  
+  return (
+    <group ref={groupRef} scale={[scale, scale, scale]}>
+      {/* Nodes */}
+      <points ref={pointsRef}>
+        <bufferGeometry>
+          <bufferAttribute
+            attach="attributes-position"
+            args={[positions, 3]}
+          />
+        </bufferGeometry>
+        <pointsMaterial
+          size={isLowPerf ? 0.04 : 0.03}
+          color={color}
+          transparent
+          opacity={0.9}
+          sizeAttenuation
+          blending={THREE.AdditiveBlending}
+        />
+      </points>
+      
+      {/* Connections */}
+      <lineSegments ref={linesRef}>
+        <bufferGeometry>
+          <bufferAttribute
+            attach="attributes-position"
+            args={[linePositions, 3]}
+          />
+        </bufferGeometry>
+        <lineBasicMaterial
+          color={color}
+          transparent
+          opacity={isLowPerf ? 0.15 : 0.2}
+          blending={THREE.AdditiveBlending}
+        />
+      </lineSegments>
+      
+      {/* Central glow sphere */}
+      <mesh>
+        <sphereGeometry args={[0.3, 32, 32]} />
+        <meshBasicMaterial
+          color={color}
+          transparent
+          opacity={0.15}
+        />
+      </mesh>
+      
+      {/* Ambient light for glow effect */}
+      <ambientLight intensity={0.5} />
+      <pointLight position={[0, 0, 0]} color={color} intensity={0.5} />
+    </group>
+  )
+}
+</file>
+
+<file path="src/components/sections/Achievements.tsx">
+'use client'
+
+import Image from 'next/image'
+import { motion } from 'framer-motion'
+import { achievements } from '@/data/achievements'
+
+const typeColors: Record<string, string> = {
+  hackathon: '#ADFF2F',
+  award: '#F59E0B',
+  certification: '#3B82F6',
+  milestone: '#10B981',
+  game: '#A855F7',
+}
+
+const typeIcons: Record<string, string> = {
+  hackathon: '🏆',
+  award: '🎖️',
+  certification: '📜',
+  milestone: '🚀',
+  game: '🎮',
+}
+
+export default function Achievements() {
+  return (
+    <section id="achievements" className="py-24 px-6">
+      <div className="max-w-5xl mx-auto">
+        {/* Section Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-100px' }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-16"
+        >
+          <h2 className="text-4xl md:text-5xl font-bold mb-4">
+            <span className="text-[#FAFAFA]">Achievement </span>
+            <span className="text-[#ADFF2F]">Timeline</span>
+          </h2>
+          <p className="text-[#A1A1AA] text-lg max-w-2xl mx-auto">
+            A journey of building, winning, and continuous learning.
+          </p>
+        </motion.div>
+        
+        {/* Timeline */}
+        <div className="relative">
+          {/* Vertical Line */}
+          <div className="absolute left-8 md:left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-[#ADFF2F] via-[rgba(173,255,47,0.3)] to-transparent" />
+          
+          {/* Timeline Items */}
+          <div className="space-y-12">
+            {achievements.map((achievement, idx) => {
+              const isLeft = idx % 2 === 0
+              const color = typeColors[achievement.type]
+              const icon = typeIcons[achievement.type]
+              
+              return (
+                <motion.div
+                  key={achievement.id}
+                  initial={{ opacity: 0, x: isLeft ? -30 : 30 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true, margin: '-50px' }}
+                  transition={{ duration: 0.6, delay: idx * 0.1 }}
+                  className={`relative flex items-start gap-8 ${
+                    isLeft ? 'md:flex-row' : 'md:flex-row-reverse'
+                  }`}
+                >
+                  {/* Timeline Dot */}
+                  <div className="absolute left-8 md:left-1/2 -translate-x-1/2 z-10">
+                    <div 
+                      className="w-4 h-4 rounded-full border-2"
+                      style={{ 
+                        borderColor: color,
+                        backgroundColor: '#0A0A0F',
+                        boxShadow: `0 0 10px ${color}40`
+                      }}
+                    />
+                  </div>
+                  
+                  {/* Content Card */}
+                  <div 
+                    className={`
+                      flex-1 ml-20 md:ml-0
+                      ${isLeft ? 'md:mr-[calc(50%+2rem)]' : 'md:ml-[calc(50%+2rem)]'}
+                    `}
+                  >
+                    <div className="p-6 rounded-2xl bg-[rgba(18,18,26,0.7)] backdrop-blur-xl border border-[rgba(255,255,255,0.1)] hover:border-[rgba(255,255,255,0.15)] transition-colors overflow-hidden">
+                      {/* Image */}
+                      {achievement.image && (
+                        <div className="relative w-full h-48 -mx-6 -mt-6 mb-4 overflow-hidden">
+                          <Image
+                            src={achievement.image}
+                            alt={achievement.title}
+                            fill
+                            className="object-cover"
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-[rgba(18,18,26,0.9)] to-transparent" />
+                        </div>
+                      )}
+                      
+                      {/* Date & Type Badge */}
+                      <div className="flex items-center gap-3 mb-3">
+                        <span className="text-2xl">{icon}</span>
+                        <span 
+                          className="px-3 py-1 rounded-full text-xs font-medium capitalize"
+                          style={{ 
+                            backgroundColor: `${color}20`,
+                            color: color,
+                            border: `1px solid ${color}40`
+                          }}
+                        >
+                          {achievement.type}
+                        </span>
+                        <span className="text-sm text-[#71717A]">
+                          {new Date(achievement.date).toLocaleDateString('en-US', {
+                            month: 'short',
+                            year: 'numeric'
+                          })}
+                        </span>
+                      </div>
+                      
+                      {/* Title */}
+                      <h3 className="text-xl font-bold text-[#FAFAFA] mb-2">
+                        {achievement.title}
+                      </h3>
+                      
+                      {/* Description */}
+                      <p className="text-[#A1A1AA] leading-relaxed mb-4">
+                        {achievement.description}
+                      </p>
+                      
+                      {/* Link */}
+                      {achievement.link && (
+                        <a
+                          href={achievement.link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-2 text-sm text-[#ADFF2F] hover:underline"
+                        >
+                          <span>Learn more</span>
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                          </svg>
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                </motion.div>
+              )
+            })}
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+</file>
+
+<file path="src/components/sections/Contact.tsx">
+'use client'
+
+import { motion } from 'framer-motion'
+import GlassCard from '@/components/ui/GlassCard'
+import GlowButton from '@/components/ui/GlowButton'
+
+const socialLinks = [
+  { 
+    name: 'GitHub', 
+    url: 'https://github.com/fishperson113', 
+    icon: (
+      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+        <path fillRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clipRule="evenodd" />
+      </svg>
+    )
+  },
+  { 
+    name: 'LinkedIn', 
+    url: 'https://www.linkedin.com/in/duong-pham-96189227a/', 
+    icon: (
+      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+        <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+      </svg>
+    )
+  },
+  { 
+    name: 'Facebook', 
+    url: 'https://www.facebook.com/fishperson113/', 
+    icon: (
+      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+        <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+      </svg>
+    )
+  },
+  { 
+    name: 'Discord', 
+    url: 'https://discord.gg/mucthichlannuoc', 
+    icon: (
+      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+        <path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189z"/>
+      </svg>
+    )
+  },
+  { 
+    name: 'Email', 
+    url: 'mailto:phamduong1132005@gmail.com', 
+    icon: (
+      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+        <path d="M1.5 8.67v8.58a3 3 0 003 3h15a3 3 0 003-3V8.67l-8.928 5.493a3 3 0 01-3.144 0L1.5 8.67z"/>
+        <path d="M22.5 6.908V6.75a3 3 0 00-3-3h-15a3 3 0 00-3 3v.158l9.714 5.978a1.5 1.5 0 001.572 0L22.5 6.908z"/>
+      </svg>
+    )
+  },
+]
+
+export default function Contact() {
+  return (
+    <section id="contact" className="py-24 px-6">
+      <div className="max-w-4xl mx-auto">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-100px' }}
+          transition={{ duration: 0.6 }}
+          className="text-center"
+        >
+          <GlassCard className="p-12">
+            <h2 className="text-4xl md:text-5xl font-bold mb-4">
+              <span className="text-[#FAFAFA]">Let&apos;s </span>
+              <span className="text-[#ADFF2F]">Connect</span>
+            </h2>
+            
+            <p className="text-[#A1A1AA] text-lg mb-8 max-w-xl mx-auto">
+              Got a project in mind? Let&apos;s build something amazing together. 
+              Reach out and let&apos;s discuss how we can collaborate.
+            </p>
+            
+            {/* Email CTA */}
+            <GlowButton 
+              variant="primary" 
+              size="lg"
+              href="mailto:phamduong1132005@gmail.com"
+            >
+              Say Hello 👋
+            </GlowButton>
+            
+            {/* Social Links */}
+            <div className="flex flex-wrap justify-center gap-4 mt-8">
+              {socialLinks.map((link) => (
+                <a
+                  key={link.name}
+                  href={link.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.1)] text-[#A1A1AA] hover:text-[#ADFF2F] hover:border-[rgba(173,255,47,0.3)] transition-all duration-300"
+                >
+                  {link.icon}
+                  <span className="text-sm font-medium">{link.name}</span>
+                </a>
+              ))}
+            </div>
+            
+            {/* Buy Me a Coffee */}
+            <div className="mt-8 pt-8 border-t border-[rgba(255,255,255,0.1)]">
+              <p className="text-[#71717A] text-sm mb-4">Support my work</p>
+              <a
+                href="https://buymeacoffee.com/fishperson113"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[#FFDD00] text-[#0A0A0F] font-semibold hover:bg-[#FFE44D] transition-colors"
+              >
+                <span className="text-lg">☕</span>
+                Buy Me a Coffee
+              </a>
+            </div>
+          </GlassCard>
+          
+          {/* Footer */}
+          <p className="text-[#71717A] text-sm mt-12">
+            © {new Date().getFullYear()} Duong Pham. Built with Next.js, Three.js, and ☕
+          </p>
+        </motion.div>
+      </div>
+    </section>
+  )
+}
+</file>
+
+<file path="src/components/sections/Hero.tsx">
+'use client'
+
+import dynamic from 'next/dynamic'
+import { motion, useScroll, useTransform } from 'framer-motion'
+import GlowButton from '@/components/ui/GlowButton'
+
+// Dynamic import for 3D components (SSR disabled)
+const Scene = dynamic(() => import('@/components/3d/Scene'), { ssr: false })
+const NeuralNetwork = dynamic(() => import('@/components/3d/NeuralNetwork'), { ssr: false })
+
+export default function Hero() {
+  // Scroll-based animation for exit effect
+  const { scrollY } = useScroll()
+  const scrollIndicatorOpacity = useTransform(scrollY, [0, 150], [1, 0])
+  const scrollIndicatorY = useTransform(scrollY, [0, 150], [0, 30])
+  
+  return (
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+      {/* 3D Background */}
+      <div className="absolute inset-0 z-0">
+        <Scene className="w-full h-full">
+          <NeuralNetwork nodeCount={400} connectionCount={600} />
+        </Scene>
+      </div>
+      
+      {/* Gradient overlays */}
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#0A0A0F] z-10" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_transparent_0%,_#0A0A0F_70%)] z-10" />
+      
+      {/* Content */}
+      <div className="relative z-20 text-center px-6 max-w-4xl mx-auto">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+        >
+          {/* Badge */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.2, duration: 0.5 }}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[rgba(173,255,47,0.1)] border border-[rgba(173,255,47,0.3)] mb-6"
+          >
+            <span className="w-2 h-2 rounded-full bg-[#ADFF2F] animate-pulse" />
+            <span className="text-sm text-[#ADFF2F] font-medium">Available for Projects</span>
+          </motion.div>
+          
+          {/* Title */}
+          <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
+            <span className="text-[#FAFAFA]">AI Engineer &</span>
+            <br />
+            <span className="bg-gradient-to-r from-[#FAFAFA] to-[#ADFF2F] bg-clip-text text-transparent">
+              Full-Stack Generalist
+            </span>
+          </h1>
+          
+          {/* Subtitle */}
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.4, duration: 0.6 }}
+            className="text-xl md:text-2xl text-[#A1A1AA] mb-8 max-w-2xl mx-auto"
+          >
+            End-to-end product builder. Serial hackathon winner.
+            <br />
+            Crafting <span className="text-[#ADFF2F]">Web</span>, <span className="text-[#ADFF2F]">App</span>, and <span className="text-[#ADFF2F]">Game</span> experiences.
+          </motion.p>
+          
+          {/* CTA Buttons */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6, duration: 0.5 }}
+            className="flex flex-col sm:flex-row items-center justify-center gap-4"
+          >
+            <GlowButton variant="primary" size="lg" href="#projects">
+              View Projects
+            </GlowButton>
+            <GlowButton variant="secondary" size="lg" href="#contact">
+              Get in Touch
+            </GlowButton>
+          </motion.div>
+        </motion.div>
+        
+        {/* Scroll indicator with exit effect */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1, duration: 0.5 }}
+          style={{ 
+            opacity: scrollIndicatorOpacity,
+            y: scrollIndicatorY
+          }}
+          className="absolute bottom-10 left-1/2 -translate-x-1/2"
+        >
+          <div className="flex flex-col items-center gap-2 text-[#71717A]">
+            <span className="text-xs uppercase tracking-widest">Scroll</span>
+            <motion.div
+              animate={{ y: [0, 8, 0] }}
+              transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
+              className="w-5 h-8 rounded-full border-2 border-[#71717A] flex items-start justify-center p-1"
+            >
+              <div className="w-1 h-2 rounded-full bg-[#ADFF2F]" />
+            </motion.div>
+          </div>
+        </motion.div>
+      </div>
+    </section>
+  )
+}
+</file>
+
+<file path="src/components/sections/Projects.tsx">
+'use client'
+
+import Image from 'next/image'
+import { motion } from 'framer-motion'
+import BentoCard from '@/components/ui/BentoCard'
+import { projects } from '@/data/projects'
+
+export default function Projects() {
+  return (
+    <section id="projects" className="py-24 px-6">
+      <div className="max-w-7xl mx-auto">
+        {/* Section Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-100px' }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-16"
+        >
+          <h2 className="text-4xl md:text-5xl font-bold mb-4">
+            <span className="text-[#FAFAFA]">Featured </span>
+            <span className="text-[#ADFF2F]">Projects</span>
+          </h2>
+          <p className="text-[#A1A1AA] text-lg max-w-2xl mx-auto">
+            A curated showcase of hackathon wins, side projects, and experiments in AI, web, and beyond.
+          </p>
+        </motion.div>
+        
+        {/* Bento Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {projects.map((project, idx) => (
+            <motion.div
+              key={project.id}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-50px' }}
+              transition={{ duration: 0.5, delay: idx * 0.1 }}
+              className={`
+                ${project.featured && idx === 0 ? 'md:col-span-2 lg:col-span-2' : ''}
+                ${project.featured && idx === 1 ? 'lg:row-span-2' : ''}
+              `}
+            >
+              <BentoCard 
+                spotlight 
+                featured={project.featured}
+                className="h-full"
+              >
+                {/* Project Image */}
+                {project.image && (
+                  <div className="relative w-full h-48 -mx-6 -mt-6 mb-4 overflow-hidden rounded-t-xl">
+                    <Image
+                      src={project.image}
+                      alt={project.title}
+                      fill
+                      className="object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[rgba(18,18,26,0.95)] via-[rgba(18,18,26,0.5)] to-transparent" />
+                    
+                    {/* Hackathon Badge Overlay */}
+                    {project.hackathon && (
+                      <div className="absolute bottom-4 left-4">
+                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[rgba(0,0,0,0.6)] backdrop-blur-sm border border-[rgba(173,255,47,0.4)] text-sm font-semibold text-[#ADFF2F]">
+                          {project.hackathon.placement}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+                
+                {/* Hackathon Badge (if no image) */}
+                {project.hackathon && !project.image && (
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[rgba(173,255,47,0.1)] border border-[rgba(173,255,47,0.3)] text-sm text-[#ADFF2F] mb-4">
+                    {project.hackathon.placement}
+                  </div>
+                )}
+                
+                {/* Title */}
+                <h3 className="text-xl font-bold text-[#FAFAFA] mb-2">
+                  {project.title}
+                </h3>
+                
+                {/* Hackathon Name */}
+                {project.hackathon && (
+                  <p className="text-sm text-[#71717A] mb-3">
+                    {project.hackathon.name}
+                  </p>
+                )}
+                
+                {/* Description */}
+                <p className="text-[#A1A1AA] mb-4 leading-relaxed">
+                  {project.description}
+                </p>
+                
+                {/* Tags */}
+                <div className="flex flex-wrap gap-2">
+                  {project.tags.map((tag) => (
+                    <span
+                      key={tag}
+                      className="px-3 py-1 text-xs rounded-full bg-[rgba(255,255,255,0.05)] text-[#A1A1AA] border border-[rgba(255,255,255,0.1)]"
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+                
+                {/* Links */}
+                {(project.link || project.github) && (
+                  <div className="flex gap-4 mt-6 pt-4 border-t border-[rgba(255,255,255,0.1)]">
+                    {project.link && (
+                      <a
+                        href={project.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[#ADFF2F] text-[#0A0A0F] font-semibold text-sm hover:bg-[#8BCC26] transition-colors"
+                      >
+                        <span>Visit Website</span>
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                        </svg>
+                      </a>
+                    )}
+                    {project.github && (
+                      <a
+                        href={project.github}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-sm text-[#A1A1AA] hover:text-[#FAFAFA]"
+                      >
+                        GitHub
+                      </a>
+                    )}
+                  </div>
+                )}
+              </BentoCard>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+</file>
+
+<file path="src/components/ui/GlowButton.tsx">
+'use client'
+
+import { ReactNode } from 'react'
+import { cn } from '@/lib/utils'
+
+interface GlowButtonProps {
+  children: ReactNode
+  className?: string
+  variant?: 'primary' | 'secondary'
+  size?: 'sm' | 'md' | 'lg'
+  onClick?: () => void
+  href?: string
+}
+
+export default function GlowButton({
+  children,
+  className = '',
+  variant = 'primary',
+  size = 'md',
+  onClick,
+  href
+}: GlowButtonProps) {
+  const baseStyles = cn(
+    'relative inline-flex items-center justify-center',
+    'font-semibold rounded-xl',
+    'transition-all duration-300 ease-out',
+    'focus:outline-none focus:ring-2 focus:ring-[#ADFF2F] focus:ring-offset-2 focus:ring-offset-[#0A0A0F]',
+    
+    // Size variants
+    size === 'sm' && 'px-4 py-2 text-sm',
+    size === 'md' && 'px-6 py-3 text-base',
+    size === 'lg' && 'px-8 py-4 text-lg',
+    
+    // Primary variant
+    variant === 'primary' && [
+      'bg-[#ADFF2F] text-[#0A0A0F]',
+      'hover:bg-[#8BCC26]',
+      'shadow-[0_0_20px_rgba(173,255,47,0.3)]',
+      'hover:shadow-[0_0_30px_rgba(173,255,47,0.5)]',
+    ],
+    
+    // Secondary variant
+    variant === 'secondary' && [
+      'bg-transparent text-[#FAFAFA]',
+      'border border-[rgba(255,255,255,0.2)]',
+      'hover:border-[#ADFF2F] hover:text-[#ADFF2F]',
+      'hover:shadow-[0_0_20px_rgba(173,255,47,0.2)]',
+    ],
+    
+    className
+  )
+  
+  if (href) {
+    const isInternal = href.startsWith('#') || href.startsWith('/')
+    return (
+      <a 
+        href={href} 
+        className={baseStyles} 
+        target={isInternal ? undefined : '_blank'} 
+        rel={isInternal ? undefined : 'noopener noreferrer'}
+      >
+        {children}
+      </a>
+    )
+  }
+  
+  return (
+    <button onClick={onClick} className={baseStyles}>
+      {children}
+    </button>
+  )
+}
+</file>
+
+<file path="src/data/achievements.ts">
+export interface Achievement {
+  id: string
+  title: string
+  description: string
+  date: string
+  type: 'hackathon' | 'award' | 'certification' | 'milestone' | 'game'
+  image?: string
+  link?: string
+}
+
+export const achievements: Achievement[] = [
+  {
+    id: 'scholarship-routing-launch',
+    title: '🚀 Launched Scholarship Routing',
+    description: 'Successfully launched Scholarship Routing platform - a comprehensive AI-powered solution helping students find international scholarships with smart search, advanced filtering, and AI chatbot consultant.',
+    date: '2025-12',
+    type: 'milestone',
+    image: '/images/poster-SEEAPP-2025.jpg',
+    link: 'https://scholarshipsrouting.netlify.app/',
+  },
+  {
+    id: 'seeapp-2025',
+    title: '🏆 Champion - SEEAPP 2025',
+    description: 'Won Champion at the SE Mobile App Development Competition (SEEAPP) 2025 with Scholarship Routing mobile app featuring AI chatbot consultant using Gemini + RAG technology.',
+    date: '2025-12',
+    type: 'hackathon',
+    image: '/images/1st-SEEAPP-2025.jpg',
+    link: 'https://se.uit.edu.vn/vi/tin-t%E1%BB%A9c/12-su-kien-noi-bat/2166-l%E1%BB%85-trao-gi%E1%BA%A3i-seapp-2025.html?highlight=WyJzZWFwcCJd',
+  },
+  {
+    id: 'aisc-2025',
+    title: '🥇 1st Prize - AISC 2025',
+    description: 'Won 1st Prize at the Advanced Information Systems Contest (AISC) 2025 organized by UIT with Scholarship Routing - helping students overcome barriers of finding international scholarships.',
+    date: '2025-11',
+    type: 'hackathon',
+    image: '/images/AISC-CDH-4.jpg',
+    link: 'https://httt.uit.edu.vn/aisc/',
+  },
+  {
+    id: 'foxy-adventure',
+    title: '🦊 Foxy Adventure Game Released',
+    description: 'Released Foxy Adventure - an action platformer featuring unique crafting system with elemental combinations and counter mechanics. Players create their own playstyle through powerful weapon crafting.',
+    date: '2025-12',
+    type: 'game',
+    image: '/images/present_vng.jpg',
+    link: 'https://doandev.itch.io/foxy-adventure',
+  },
+]
+
+export const getAchievementsByYear = () => {
+  const grouped: Record<string, Achievement[]> = {}
+  achievements.forEach(achievement => {
+    const year = achievement.date.split('-')[0]
+    if (!grouped[year]) grouped[year] = []
+    grouped[year].push(achievement)
+  })
+  return grouped
+}
+</file>
+
+<file path="src/data/projects.ts">
+export interface Project {
+  id: string
+  title: string
+  description: string
+  tags: string[]
+  image?: string
+  link?: string
+  github?: string
+  featured: boolean
+  hackathon?: {
+    name: string
+    placement: string
+  }
+}
+
+export const projects: Project[] = [
+  {
+    id: 'scholarship-routing',
+    title: 'Scholarship Routing',
+    description: 'A comprehensive platform helping students overcome barriers of finding international scholarships. Features AI-powered chatbot consultant using Gemini + RAG, smart search engine, advanced filtering, and application tracking dashboard.',
+    tags: ['AI/ML', 'Gemini', 'RAG', 'React', 'FastAPI', 'Full-Stack'],
+    image: '/images/poster-SEEAPP-2025.jpg',
+    link: 'https://scholarshipsrouting.netlify.app/',
+    featured: true,
+    hackathon: {
+      name: 'AISC 2025 & SEEAPP 2025',
+      placement: '🥇 Double Champion'
+    }
+  },
+  {
+    id: 'foxy-adventure',
+    title: 'Foxy Adventure',
+    description: 'An action platformer game where Foxy the fox hunts for treasure. Features unique crafting system with elemental combinations and counter mechanics - your power is determined by your own hands!',
+    tags: ['Game Dev', 'Godot', 'GDScript', 'Platformer'],
+    image: '/images/present_vng.jpg',
+    link: 'https://doandev.itch.io/foxy-adventure',
+    featured: true,
+  },
+  {
+    id: 'ai-agent-platform',
+    title: 'AI Agent Platform',
+    description: 'Multi-agent orchestration platform with LangChain, featuring autonomous task decomposition and parallel agent execution.',
+    tags: ['AI/ML', 'LangChain', 'Python', 'FastAPI'],
+    featured: false,
+  },
+  {
+    id: 'livekit-learning-room',
+    title: 'Livekit Learning Room',
+    description: 'Online interactive learning meeting room with teacher and student featuring polling, whiteboard, and attendance check.',
+    tags: ['LiveKit', 'Angular', 'ASP.NET Core', 'Real-time'],
+    featured: false,
+  },
+]
+
+export const featuredProjects = projects.filter(p => p.featured)
+export const hackathonProjects = projects.filter(p => p.hackathon)
+</file>
+
+<file path="src/data/skills.ts">
+export interface Skill {
+  id: string
+  name: string
+  category: 'ai' | 'web' | 'app' | 'game' | 'backend' | 'languages' | 'tools'
+  level: number
+}
+
+export interface SkillCategory {
+  id: string
+  name: string
+  description: string
+  color: string
+  skills: Skill[]
+}
+
+export const skillCategories: SkillCategory[] = [
+  {
+    id: 'languages',
+    name: 'Programming Languages',
+    description: 'Core languages for software development',
+    color: '#ADFF2F',
+    skills: [
+      { id: 'typescript', name: 'TypeScript', category: 'languages', level: 95 },
+      { id: 'python', name: 'Python', category: 'languages', level: 95 },
+      { id: 'javascript', name: 'JavaScript', category: 'languages', level: 95 },
+      { id: 'go', name: 'Go', category: 'languages', level: 80 },
+      { id: 'cpp', name: 'C++', category: 'languages', level: 85 },
+      { id: 'csharp', name: 'C#', category: 'languages', level: 80 },
+      { id: 'kotlin', name: 'Kotlin', category: 'languages', level: 75 },
+    ]
+  },
+  {
+    id: 'ai',
+    name: 'AI & ML Engineering',
+    description: 'Machine Learning, LLMs, Data Science',
+    color: '#FF6F00',
+    skills: [
+      { id: 'tensorflow', name: 'TensorFlow', category: 'ai', level: 85 },
+      { id: 'keras', name: 'Keras', category: 'ai', level: 85 },
+      { id: 'sklearn', name: 'scikit-learn', category: 'ai', level: 90 },
+      { id: 'pandas', name: 'Pandas', category: 'ai', level: 90 },
+      { id: 'numpy', name: 'NumPy', category: 'ai', level: 90 },
+      { id: 'mlflow', name: 'MLflow', category: 'ai', level: 75 },
+    ]
+  },
+  {
+    id: 'web',
+    name: 'Web Development',
+    description: 'Frontend & Full-Stack Web Apps',
+    color: '#3B82F6',
+    skills: [
+      { id: 'react', name: 'React', category: 'web', level: 95 },
+      { id: 'vue', name: 'Vue.js', category: 'web', level: 85 },
+      { id: 'angular', name: 'Angular', category: 'web', level: 80 },
+      { id: 'tailwind', name: 'TailwindCSS', category: 'web', level: 95 },
+      { id: 'vite', name: 'Vite', category: 'web', level: 90 },
+      { id: 'nodejs', name: 'Node.js', category: 'web', level: 95 },
+      { id: 'fastapi', name: 'FastAPI', category: 'web', level: 90 },
+    ]
+  },
+  {
+    id: 'app',
+    name: 'App Development',
+    description: 'Mobile & Cross-Platform Apps',
+    color: '#10B981',
+    skills: [
+      { id: 'react-native', name: 'React Native', category: 'app', level: 90 },
+      { id: 'flutter', name: 'Flutter', category: 'app', level: 85 },
+    ]
+  },
+  {
+    id: 'game',
+    name: 'Game Development',
+    description: 'Game Engines & Interactive Media',
+    color: '#F59E0B',
+    skills: [
+      { id: 'unity', name: 'Unity', category: 'game', level: 80 },
+      { id: 'godot', name: 'Godot', category: 'game', level: 75 },
+    ]
+  },
+  {
+    id: 'backend',
+    name: 'Backend & DevOps',
+    description: 'Databases, Cloud, CI/CD',
+    color: '#EC4899',
+    skills: [
+      { id: 'mysql', name: 'MySQL', category: 'backend', level: 90 },
+      { id: 'mongodb', name: 'MongoDB', category: 'backend', level: 85 },
+      { id: 'redis', name: 'Redis', category: 'backend', level: 85 },
+      { id: 'elasticsearch', name: 'Elasticsearch', category: 'backend', level: 80 },
+      { id: 'nginx', name: 'Nginx', category: 'backend', level: 80 },
+      { id: 'prometheus', name: 'Prometheus', category: 'backend', level: 75 },
+      { id: 'grafana', name: 'Grafana', category: 'backend', level: 75 },
+    ]
+  },
+  {
+    id: 'tools',
+    name: 'Tools & Testing',
+    description: 'Version Control, Testing, Design',
+    color: '#8B5CF6',
+    skills: [
+      { id: 'git', name: 'Git', category: 'tools', level: 95 },
+      { id: 'github', name: 'GitHub', category: 'tools', level: 95 },
+      { id: 'selenium', name: 'Selenium', category: 'tools', level: 85 },
+      { id: 'postman', name: 'Postman', category: 'tools', level: 90 },
+      { id: 'figma', name: 'Figma', category: 'tools', level: 80 },
+    ]
+  }
+]
+
+export const allSkills = skillCategories.flatMap(cat => cat.skills)
+</file>
+
+</files>

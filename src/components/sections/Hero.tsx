@@ -7,6 +7,7 @@ import GlowButton from '@/components/ui/GlowButton'
 // Dynamic import for 3D components (SSR disabled)
 const Scene = dynamic(() => import('@/components/3d/Scene'), { ssr: false })
 const NeuralNetwork = dynamic(() => import('@/components/3d/NeuralNetwork'), { ssr: false })
+const FloatingParticles = dynamic(() => import('@/components/3d/floating-particles'), { ssr: false })
 
 export default function Hero() {
   // Scroll-based animation for exit effect
@@ -15,11 +16,12 @@ export default function Hero() {
   const scrollIndicatorY = useTransform(scrollY, [0, 150], [0, 30])
   
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+    <section id="hero" className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* 3D Background */}
       <div className="absolute inset-0 z-0">
         <Scene className="w-full h-full">
           <NeuralNetwork nodeCount={400} connectionCount={600} />
+          <FloatingParticles />
         </Scene>
       </div>
       

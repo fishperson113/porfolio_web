@@ -195,3 +195,14 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: var(--color-text-muted);
 }
+
+/* ========================================
+   CUSTOM CURSOR
+   ======================================== */
+
+/* Hide native cursor on pointer devices */
+@media (hover: hover) and (pointer: fine) {
+  body, a, button, [role="button"] {
+    cursor: none !important;
+  }
+}

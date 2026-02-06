@@ -3,6 +3,7 @@
 import Image from 'next/image'
 import { motion } from 'framer-motion'
 import BentoCard from '@/components/ui/BentoCard'
+import AnimatedText from '@/components/ui/animated-text'
 import { projects } from '@/data/projects'
 
 export default function Projects() {
@@ -18,8 +19,9 @@ export default function Projects() {
           className="text-center mb-16"
         >
           <h2 className="text-4xl md:text-5xl font-bold mb-4">
-            <span className="text-[#FAFAFA]">Featured </span>
-            <span className="text-[#ADFF2F]">Projects</span>
+            <AnimatedText text="Featured" className="text-[#FAFAFA]" />
+            {' '}
+            <AnimatedText text="Projects" className="text-[#ADFF2F]" staggerDelay={0.08} />
           </h2>
           <p className="text-[#A1A1AA] text-lg max-w-2xl mx-auto">
             A curated showcase of hackathon wins, side projects, and experiments in AI, web, and beyond.

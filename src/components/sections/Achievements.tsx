@@ -2,6 +2,7 @@
 
 import Image from 'next/image'
 import { motion } from 'framer-motion'
+import AnimatedText from '@/components/ui/animated-text'
 import { achievements } from '@/data/achievements'
 
 const typeColors: Record<string, string> = {
@@ -33,8 +34,9 @@ export default function Achievements() {
           className="text-center mb-16"
         >
           <h2 className="text-4xl md:text-5xl font-bold mb-4">
-            <span className="text-[#FAFAFA]">Achievement </span>
-            <span className="text-[#ADFF2F]">Timeline</span>
+            <AnimatedText text="Achievement" className="text-[#FAFAFA]" />
+            {' '}
+            <AnimatedText text="Timeline" className="text-[#ADFF2F]" staggerDelay={0.08} />
           </h2>
           <p className="text-[#A1A1AA] text-lg max-w-2xl mx-auto">
             A journey of building, winning, and continuous learning.

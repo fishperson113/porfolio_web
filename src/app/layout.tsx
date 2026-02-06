@@ -1,5 +1,10 @@
 import type { Metadata } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
+import { MotionProvider } from '@/contexts/motion-context'
+import { CursorProvider } from '@/hooks/use-cursor-state'
+import CustomCursor from '@/components/ui/custom-cursor'
+import Preloader from '@/components/ui/preloader'
+import EasterEgg from '@/components/effects/easter-egg'
 import './globals.css'
 
 const geist = Geist({
@@ -37,7 +42,14 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body className={`${geist.variable} ${geistMono.variable} antialiased`}>
-        {children}
+        <MotionProvider>
+          <CursorProvider>
+            <Preloader />
+            <CustomCursor />
+            <EasterEgg />
+            {children}
+          </CursorProvider>
+        </MotionProvider>
       </body>
     </html>
   )

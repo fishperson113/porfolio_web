@@ -50,6 +50,7 @@ next-env.d.ts
 # Misc
 Thumbs.db
 .vite/
-.agent/
 # Local Netlify folder
 .netlify
+.claude/
+.agent/

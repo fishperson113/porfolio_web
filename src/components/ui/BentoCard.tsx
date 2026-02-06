@@ -1,7 +1,9 @@
 'use client'
 
-import { useRef, useState, MouseEvent, ReactNode } from 'react'
+import { useRef, useState, type MouseEvent, type ReactNode } from 'react'
+import { motion } from 'framer-motion'
 import { cn } from '@/lib/utils'
+import { useTiltEffect } from '@/hooks/use-tilt-effect'
 
 interface BentoCardProps {
   children: ReactNode
@@ -10,56 +12,66 @@ interface BentoCardProps {
   featured?: boolean
 }
 
-export default function BentoCard({ 
-  children, 
+export default function BentoCard({
+  children,
   className = '',
   spotlight = true,
-  featured = false
+  featured = false,
 }: BentoCardProps) {
   const cardRef = useRef<HTMLDivElement>(null)
   const [mousePosition, setMousePosition] = useState({ x: 50, y: 50 })
   const [isHovered, setIsHovered] = useState(false)
-  
+  const { ref: tiltRef, style: tiltStyle, handlers: tiltHandlers } = useTiltEffect({
+    maxRotation: 10,
+    scale: 1.02,
+  })
+
   const handleMouseMove = (e: MouseEvent<HTMLDivElement>) => {
-    if (!cardRef.current || !spotlight) return
-    
-    const rect = cardRef.current.getBoundingClientRect()
-    const x = ((e.clientX - rect.left) / rect.width) * 100
-    const y = ((e.clientY - rect.top) / rect.height) * 100
-    
-    setMousePosition({ x, y })
+    if (cardRef.current && spotlight) {
+      const rect = cardRef.current.getBoundingClientRect()
+      setMousePosition({
+        x: ((e.clientX - rect.left) / rect.width) * 100,
+        y: ((e.clientY - rect.top) / rect.height) * 100,
+      })
+    }
+    tiltHandlers.onMouseMove(e)
   }
-  
+
+  const handleMouseEnter = () => {
+    setIsHovered(true)
+    tiltHandlers.onMouseEnter()
+  }
+
+  const handleMouseLeave = () => {
+    setIsHovered(false)
+    tiltHandlers.onMouseLeave()
+  }
+
   return (
-    <div
-      ref={cardRef}
+    <motion.div
+      ref={(node) => {
+        (cardRef as React.MutableRefObject<HTMLDivElement | null>).current = node
+        ;(tiltRef as React.MutableRefObject<HTMLDivElement | null>).current = node
+      }}
+      style={tiltStyle}
       onMouseMove={handleMouseMove}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
       className={cn(
         'relative rounded-2xl p-6 overflow-hidden',
-        'bg-[rgba(18,18,26,0.7)]',
-        'backdrop-blur-xl',
+        'bg-[rgba(18,18,26,0.7)] backdrop-blur-xl',
         'border border-[rgba(255,255,255,0.1)]',
         'shadow-[0_8px_32px_rgba(0,0,0,0.4)]',
-        'transition-all duration-300 ease-out',
+        'transition-colors duration-300 ease-out',
         'hover:border-[rgba(255,255,255,0.2)]',
-        'hover:shadow-[0_12px_40px_rgba(0,0,0,0.5)]',
-        featured && 'border-[rgba(173,255,47,0.2)]',
-        featured && 'hover:border-[rgba(173,255,47,0.4)]',
+        featured && 'border-[rgba(173,255,47,0.2)] hover:border-[rgba(173,255,47,0.4)]',
         className
       )}
-      style={{
-        '--mouse-x': `${mousePosition.x}%`,
-        '--mouse-y': `${mousePosition.y}%`,
-      } as React.CSSProperties}
     >
-      {/* Spotlight gradient overlay */}
       {spotlight && (
         <div
           className={cn(
-            'absolute inset-0 pointer-events-none z-10',
-            'transition-opacity duration-300',
+            'absolute inset-0 pointer-events-none z-10 transition-opacity duration-300',
             isHovered ? 'opacity-100' : 'opacity-0'
           )}
           style={{
@@ -67,13 +79,10 @@ export default function BentoCard({
           }}
         />
       )}
-      
-      {/* Gradient border effect on hover */}
       {featured && (
         <div
           className={cn(
-            'absolute inset-0 rounded-2xl pointer-events-none',
-            'transition-opacity duration-300',
+            'absolute inset-0 rounded-2xl pointer-events-none transition-opacity duration-300',
             isHovered ? 'opacity-100' : 'opacity-0'
           )}
           style={{
@@ -81,11 +90,7 @@ export default function BentoCard({
           }}
         />
       )}
-      
-      {/* Content */}
-      <div className="relative z-20">
-        {children}
-      </div>
-    </div>
+      <div className="relative z-20">{children}</div>
+    </motion.div>
   )
 }
