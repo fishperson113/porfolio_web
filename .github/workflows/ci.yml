@@ -8,10 +8,22 @@ jobs:
   warmup:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
-      - run: npm install -g @anthropic-ai/claude-code
-      - run: echo "warmup" | claude -p
+          node-version: '20'
+          
+      - name: Install Claude Code
+        run: npm install -g @anthropic-ai/claude-code
+
+      - name: Bypass Onboarding & Run Claude
+        run: |
+          # Tạo thư mục và cấu hình bỏ qua onboarding
+          mkdir -p ~/.claude
+          echo '{"hasCompletedOnboarding": true}' > ~/.claude.json
+          
+          # Chạy lệnh Claude với cờ bỏ qua quyền xác nhận thủ công
+          echo "warmup" | claude --dangerously-skip-permissions -p
         env:
           CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+
